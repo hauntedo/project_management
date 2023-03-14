@@ -19,6 +19,16 @@ import javax.persistence.*;
 @Setter
 public class Project extends AbstractEntity {
 
+    @Column(name = "project_name", nullable = false)
+    private String name;
+
+    @Column(name = "project_description")
+    private String description;
+
+    @OneToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    private User owner;
+
     @Enumerated(value = EnumType.STRING)
     @Column(name = "project_state")
     private ProjectState projectState;

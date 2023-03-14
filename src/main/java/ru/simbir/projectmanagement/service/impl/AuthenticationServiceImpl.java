@@ -14,7 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.simbir.projectmanagement.dto.request.AuthenticationRequest;
 import ru.simbir.projectmanagement.dto.request.RegistrationRequest;
 import ru.simbir.projectmanagement.dto.response.TokenResponse;
-import ru.simbir.projectmanagement.exception.EmptyRequestArgumentException;
 import ru.simbir.projectmanagement.exception.OccupiedDataException;
 import ru.simbir.projectmanagement.model.User;
 import ru.simbir.projectmanagement.repository.UserRepository;
@@ -54,9 +53,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public UUID register(RegistrationRequest registrationRequest) {
         String email = registrationRequest.getEmail();
         String password = registrationRequest.getPassword();
-        if (email.isEmpty() || password.isEmpty()) {
-            throw new EmptyRequestArgumentException("Empty arguments: email or password");
-        }
         if (userRepository.existsUserByEmail(email)) {
             throw new OccupiedDataException("Email is occupied " + email);
         }

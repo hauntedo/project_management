@@ -24,7 +24,6 @@ public class SecurityConfiguration {
 
     private final JwtRequestFilter jwtRequestFilter;
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.cors().and()
@@ -32,6 +31,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .antMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated().and()
+                //.anyRequest().permitAll().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

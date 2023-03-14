@@ -33,8 +33,8 @@ public class Task extends AbstractEntity {
     private User developer;
 
     @ManyToOne
-    @JoinColumn(name = "task_pool_id", referencedColumnName = "id")
-    private TaskPool taskPool;
+    @JoinColumn(name = "project_id", referencedColumnName = "id")
+    private Project project;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "task_state", nullable = false)

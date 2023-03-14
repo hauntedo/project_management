@@ -42,7 +42,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         try {
             return jwtVerifier.verify(token).getSubject();
         } catch (JWTVerificationException ex) {
-            return null;
+            throw new JWTVerificationException("Token expired");
         }
     }
 }
