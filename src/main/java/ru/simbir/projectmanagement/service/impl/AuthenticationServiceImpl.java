@@ -1,7 +1,6 @@
 package ru.simbir.projectmanagement.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.mbeans.UserMBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,15 +14,13 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.simbir.projectmanagement.dto.request.AuthenticationRequest;
 import ru.simbir.projectmanagement.dto.request.RegistrationRequest;
 import ru.simbir.projectmanagement.dto.response.TokenResponse;
-import ru.simbir.projectmanagement.dto.response.UserResponse;
-import ru.simbir.projectmanagement.exception.FailureLoginException;
+import ru.simbir.projectmanagement.exception.EmptyRequestArgumentException;
 import ru.simbir.projectmanagement.exception.OccupiedDataException;
 import ru.simbir.projectmanagement.model.User;
 import ru.simbir.projectmanagement.repository.UserRepository;
 import ru.simbir.projectmanagement.security.jwt.JwtTokenService;
 import ru.simbir.projectmanagement.service.AuthenticationService;
 import ru.simbir.projectmanagement.utils.enums.Role;
-import ru.simbir.projectmanagement.utils.mapper.UserMapper;
 
 import java.util.UUID;
 

@@ -1,6 +1,5 @@
 package ru.simbir.projectmanagement.security.userdetails;
 
-import liquibase.pro.packaged.B;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

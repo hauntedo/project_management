@@ -4,11 +4,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import ru.simbir.projectmanagement.dto.response.UserResponse;
 import ru.simbir.projectmanagement.security.jwt.JwtTokenService;
 
 import java.time.Duration;
@@ -26,6 +24,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         this.hmac512 = Algorithm.HMAC512(secret);
         this.jwtVerifier = JWT.require(this.hmac512).build();
     }
+
     @Override
     public String generateToken(UserDetails userDetails) {
 

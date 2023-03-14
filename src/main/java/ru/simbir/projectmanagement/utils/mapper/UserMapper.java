@@ -9,6 +9,7 @@ import ru.simbir.projectmanagement.model.User;
 public interface UserMapper {
 
     User toUser(RegistrationRequest registrationRequest);
+
     UserResponse toResponse(User user);
 }
 

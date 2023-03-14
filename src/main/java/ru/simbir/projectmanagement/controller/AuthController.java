@@ -3,7 +3,6 @@ package ru.simbir.projectmanagement.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.simbir.projectmanagement.api.AuthApi;
 import ru.simbir.projectmanagement.dto.request.AuthenticationRequest;
 import ru.simbir.projectmanagement.dto.request.RegistrationRequest;

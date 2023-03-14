@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.simbir.projectmanagement.exception.DataNotFoundException;
 import ru.simbir.projectmanagement.model.User;
 import ru.simbir.projectmanagement.repository.UserRepository;
 

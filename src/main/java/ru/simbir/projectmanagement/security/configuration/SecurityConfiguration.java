@@ -39,7 +39,8 @@ public class SecurityConfiguration {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> {};
+        return web -> {
+        };
     }
 
     @Bean
