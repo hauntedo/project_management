@@ -8,6 +8,7 @@ import ru.simbir.projectmanagement.dto.request.AuthenticationRequest;
 import ru.simbir.projectmanagement.dto.request.RegistrationRequest;
 import ru.simbir.projectmanagement.dto.response.TokenResponse;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -19,5 +20,5 @@ public interface AuthApi {
     ResponseEntity<TokenResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest);
 
     @PostMapping(value = "/register", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    ResponseEntity<UUID> register(@RequestBody RegistrationRequest registrationRequest);
+    ResponseEntity<UUID> register(@RequestBody @Valid RegistrationRequest registrationRequest);
 }

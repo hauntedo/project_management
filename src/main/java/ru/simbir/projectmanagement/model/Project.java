@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import ru.simbir.projectmanagement.utils.enums.ProjectState;
 
 import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,5 +33,8 @@ public class Project extends AbstractEntity {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "project_state")
     private ProjectState projectState;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
+    private List<Task> tasks;
 
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.simbir.projectmanagement.dto.request.ProjectRequest;
 import ru.simbir.projectmanagement.dto.response.ProjectResponse;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public interface ProjectApi {
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    ResponseEntity<ProjectResponse> createProject(@RequestBody ProjectRequest projectRequest,
+    ResponseEntity<ProjectResponse> createProject(@RequestBody @Valid ProjectRequest projectRequest,
                                                   @AuthenticationPrincipal UserDetails userDetails);
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
@@ -26,7 +27,7 @@ public interface ProjectApi {
     ResponseEntity<ProjectResponse> getProjectById(@PathVariable("project-id") UUID projectId);
 
     @PutMapping(value = "/{project-id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    ResponseEntity<ProjectResponse> updateProjectById(@RequestBody ProjectRequest projectRequest,
+    ResponseEntity<ProjectResponse> updateProjectById(@RequestBody @Valid ProjectRequest projectRequest,
                                                       @PathVariable("project-id") UUID projectId,
                                                       @AuthenticationPrincipal UserDetails userDetails);
 }
