@@ -13,4 +13,6 @@ public interface ProjectService {
     ProjectResponse updateProjectById(UUID projectId, ProjectRequest projectRequest, String username);
 
     ProjectResponse startProject(UUID projectId, String username);
+
+    ProjectResponse endProject(UUID projectId, String username);
 }

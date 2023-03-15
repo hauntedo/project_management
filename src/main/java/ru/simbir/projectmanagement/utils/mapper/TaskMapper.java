@@ -6,6 +6,9 @@ import ru.simbir.projectmanagement.dto.request.TaskRequest;
 import ru.simbir.projectmanagement.dto.response.TaskResponse;
 import ru.simbir.projectmanagement.model.Task;
 
+import java.util.Collection;
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
 
@@ -14,5 +17,7 @@ public interface TaskMapper {
     Task toEntity(TaskRequest taskRequest);
 
     void update(TaskRequest taskRequest, @MappingTarget Task task);
+
+    List<TaskResponse> toList(Collection<Task> tasks);
 
 }
