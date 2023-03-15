@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.simbir.projectmanagement.dto.request.ProjectRequest;
 import ru.simbir.projectmanagement.dto.response.ProjectResponse;
 import ru.simbir.projectmanagement.exception.DataNotFoundException;
-import ru.simbir.projectmanagement.exception.ProjectStateException;
+import ru.simbir.projectmanagement.exception.EntityStateException;
 import ru.simbir.projectmanagement.model.Project;
 import ru.simbir.projectmanagement.model.Task;
 import ru.simbir.projectmanagement.model.User;
@@ -60,7 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(projectId).orElseThrow(DataNotFoundException::new);
         checkAccessToOperate(username, project.getOwner().getEmail());
         if (project.getProjectState() != ProjectState.BACKLOG) {
-            throw new ProjectStateException("Project can only be run in backlog state");
+            throw new EntityStateException("Project can only be run in backlog state");
         }
         project.setProjectState(ProjectState.IN_PROGRESS);
         return projectMapper.toResponse(projectRepository.save(project));
@@ -73,7 +73,7 @@ public class ProjectServiceImpl implements ProjectService {
         checkAccessToOperate(username, project.getOwner().getEmail());
         for (Task t : project.getTasks()) {
             if (!t.getTaskState().equals(TaskState.DONE)) {
-                throw new ProjectStateException("Project can only be closed if all tasks are in DONE status");
+                throw new EntityStateException("Project can only be closed if all tasks are in DONE status");
             }
         }
         project.setProjectState(ProjectState.DONE);

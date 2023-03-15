@@ -33,4 +33,16 @@ public interface TaskApi {
     ResponseEntity<SuccessResponse> deleteTaskById(@PathVariable("task-id") UUID taskId,
                                                    @AuthenticationPrincipal UserDetails userDetails);
 
+    @PutMapping(value = "/{task-id}/backlog", produces = APPLICATION_JSON_VALUE)
+    ResponseEntity<TaskResponse> updateBacklogTask(@PathVariable("task-id") UUID taskId,
+                                                   @AuthenticationPrincipal UserDetails userDetails);
+
+    @PutMapping(value = "/{task-id}/in-progress", produces = APPLICATION_JSON_VALUE)
+    ResponseEntity<TaskResponse> updateInProgressTask(@PathVariable("task-id") UUID taskId,
+                                                      @AuthenticationPrincipal UserDetails userDetails);
+
+    @PutMapping(value = "/{task-id}/done", produces = APPLICATION_JSON_VALUE)
+    ResponseEntity<TaskResponse> updateDoneTask(@PathVariable("task-id") UUID taskId,
+                                                @AuthenticationPrincipal UserDetails userDetails);
+
 }

@@ -13,4 +13,10 @@ public interface TaskService {
     TaskResponse getTaskById(UUID taskId);
 
     void deleteTaskById(UUID taskId, String username);
+
+    TaskResponse updateTaskToBacklog(UUID taskId, String username);
+
+    TaskResponse updateTaskToInProgress(UUID taskId, String username);
+
+    TaskResponse updateTaskToDone(UUID taskId, String username);
 }

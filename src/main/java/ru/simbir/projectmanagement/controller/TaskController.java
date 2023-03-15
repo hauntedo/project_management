@@ -42,4 +42,21 @@ public class TaskController implements TaskApi {
                 .time(Instant.now())
                 .build());
     }
+
+    @Override
+    public ResponseEntity<TaskResponse> updateBacklogTask(UUID taskId, UserDetails userDetails) {
+        return ResponseEntity.ok(taskService.updateTaskToBacklog(taskId, userDetails.getUsername()));
+    }
+
+    @Override
+    public ResponseEntity<TaskResponse> updateInProgressTask(UUID taskId, UserDetails userDetails) {
+        return ResponseEntity.ok(taskService.updateTaskToInProgress(taskId, userDetails.getUsername()));
+    }
+
+    @Override
+    public ResponseEntity<TaskResponse> updateDoneTask(UUID taskId, UserDetails userDetails) {
+        return ResponseEntity.ok(taskService.updateTaskToDone(taskId, userDetails.getUsername()));
+    }
+
+
 }

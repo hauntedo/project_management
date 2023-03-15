@@ -3,12 +3,12 @@ package ru.simbir.projectmanagement.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-public class ProjectStateException extends ResponseStatusException {
-    public ProjectStateException(String s) {
+public class EntityStateException extends ResponseStatusException {
+    public EntityStateException(String s) {
         super(HttpStatus.BAD_REQUEST, s);
     }
 
-    public ProjectStateException() {
+    public EntityStateException() {
         super(HttpStatus.BAD_REQUEST);
     }
 }
