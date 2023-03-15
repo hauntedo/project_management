@@ -18,7 +18,7 @@ import java.time.Instant;
 @Table(name = "releases")
 public class Release extends AbstractEntity {
 
-    @Column(name = "release_version", nullable = false)
+    @Column(name = "release_version", nullable = false, updatable = false)
     private String version;
 
     @Column(name = "release_description", nullable = false)
@@ -33,5 +33,9 @@ public class Release extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "task_id", referencedColumnName = "id")
     private Task task;
+
+    @ManyToOne
+    @JoinColumn(name = "developer_id", referencedColumnName = "id")
+    private User developer;
 
 }

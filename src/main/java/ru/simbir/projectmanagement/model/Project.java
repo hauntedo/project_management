@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import ru.simbir.projectmanagement.utils.enums.ProjectState;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -26,7 +27,7 @@ public class Project extends AbstractEntity {
     @Column(name = "project_description")
     private String description;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
 
@@ -34,7 +35,7 @@ public class Project extends AbstractEntity {
     @Column(name = "project_state")
     private ProjectState projectState;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
-    private List<Task> tasks;
+    @OneToMany(mappedBy = "project")
+    private List<Task> tasks = new ArrayList<>();
 
 }

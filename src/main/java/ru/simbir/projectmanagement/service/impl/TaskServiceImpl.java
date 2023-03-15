@@ -84,7 +84,6 @@ public class TaskServiceImpl implements TaskService {
         }
         if (task.getAuthor().getEmail().equals(username) || task.getDeveloper().getEmail().equals(username)) {
             task.setTaskState(TaskState.BACKLOG);
-            task.setDeveloper(null);
             return taskMapper.toResponse(taskRepository.save(task));
         } else {
             throw new AccessDeniedException("Only author or developer can change task state");

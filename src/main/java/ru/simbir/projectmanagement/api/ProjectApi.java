@@ -31,11 +31,11 @@ public interface ProjectApi {
                                                       @PathVariable("project-id") UUID projectId,
                                                       @AuthenticationPrincipal UserDetails userDetails);
 
-    @GetMapping(value = "/{project-id}/start", produces = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{project-id}/start", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<ProjectResponse> startProjectById(@PathVariable("project-id") UUID projectId,
                                                      @AuthenticationPrincipal UserDetails userDetails);
 
-    @GetMapping(value = "/{project-id}/end", produces = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{project-id}/end", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<ProjectResponse> endProjectById(@PathVariable("project-id") UUID projectId,
                                                    @AuthenticationPrincipal UserDetails userDetails);
 }
