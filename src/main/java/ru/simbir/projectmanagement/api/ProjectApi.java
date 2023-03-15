@@ -30,4 +30,8 @@ public interface ProjectApi {
     ResponseEntity<ProjectResponse> updateProjectById(@RequestBody @Valid ProjectRequest projectRequest,
                                                       @PathVariable("project-id") UUID projectId,
                                                       @AuthenticationPrincipal UserDetails userDetails);
+
+    @GetMapping(value = "/{project-id}/start", produces = APPLICATION_JSON_VALUE)
+    ResponseEntity<ProjectResponse> startProjectById(@PathVariable("project-id") UUID projectId,
+                                                     @AuthenticationPrincipal UserDetails userDetails);
 }

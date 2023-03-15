@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.simbir.projectmanagement.dto.request.ProjectRequest;
 import ru.simbir.projectmanagement.dto.response.ProjectResponse;
 import ru.simbir.projectmanagement.exception.DataNotFoundException;
+import ru.simbir.projectmanagement.exception.ProjectStateException;
 import ru.simbir.projectmanagement.model.Project;
 import ru.simbir.projectmanagement.model.User;
 import ru.simbir.projectmanagement.repository.ProjectRepository;
@@ -45,6 +46,20 @@ public class ProjectServiceImpl implements ProjectService {
             throw new AccessDeniedException("No access to control a project");
         }
         projectMapper.update(projectRequest, project);
+        return projectMapper.toResponse(projectRepository.save(project));
+    }
+
+    @Transactional
+    @Override
+    public ProjectResponse startProject(UUID projectId, String username) {
+        Project project = projectRepository.findById(projectId).orElseThrow(DataNotFoundException::new);
+        if (!project.getOwner().getEmail().equals(username)) {
+            throw new AccessDeniedException("No access to control a project");
+        }
+        if (project.getProjectState() != ProjectState.BACKLOG) {
+            throw new ProjectStateException("Project can only be run in backlog state");
+        }
+        project.setProjectState(ProjectState.IN_PROGRESS);
         return projectMapper.toResponse(projectRepository.save(project));
     }
 }

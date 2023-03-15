@@ -11,4 +11,6 @@ public interface ProjectService {
     ProjectResponse createProject(ProjectRequest projectRequest, String username);
 
     ProjectResponse updateProjectById(UUID projectId, ProjectRequest projectRequest, String username);
+
+    ProjectResponse startProject(UUID projectId, String username);
 }

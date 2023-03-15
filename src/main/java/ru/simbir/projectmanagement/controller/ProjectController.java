@@ -38,4 +38,9 @@ public class ProjectController implements ProjectApi {
     public ResponseEntity<ProjectResponse> updateProjectById(ProjectRequest projectRequest, UUID projectId, UserDetails userDetails) {
         return ResponseEntity.status(201).body(projectService.updateProjectById(projectId, projectRequest, userDetails.getUsername()));
     }
+
+    @Override
+    public ResponseEntity<ProjectResponse> startProjectById(UUID projectId, UserDetails userDetails) {
+        return ResponseEntity.ok(projectService.startProject(projectId, userDetails.getUsername()));
+    }
 }
