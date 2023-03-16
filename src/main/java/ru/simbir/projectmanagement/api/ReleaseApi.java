@@ -22,7 +22,7 @@ public interface ReleaseApi {
     @GetMapping(value = "/{release-id}", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<ReleaseResponse> getReleaseById(@PathVariable("release-id") UUID releaseId);
 
-    @PutMapping(value = "/{release-id}", produces = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{release-id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     ResponseEntity<ReleaseResponse> updateReleaseById(@PathVariable("release-id") UUID releaseId,
                                                       @AuthenticationPrincipal UserDetails userDetails,
                                                       @RequestBody @Valid ReleaseRequest releaseRequest);
@@ -30,10 +30,6 @@ public interface ReleaseApi {
     @PutMapping(value = "/{release-id}/close", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<ReleaseResponse> closeRelease(@PathVariable("release-id") String parameter,
                                                  @AuthenticationPrincipal UserDetails userDetails);
-
-//    @PutMapping(value = "/{release-id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-//    ResponseEntity<ReleaseResponse> updateReleaseById(@RequestBody @Valid ReleaseRequest releaseRequest,
-//                                                      @PathVariable("release-id") UUID releaseId);
 
 
 }

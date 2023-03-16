@@ -29,7 +29,7 @@ public class ReleaseController implements ReleaseApi {
 
     @Override
     public ResponseEntity<ReleaseResponse> updateReleaseById(UUID releaseId, UserDetails userDetails, ReleaseRequest releaseRequest) {
-        return null;
+        return ResponseEntity.status(201).body(releaseService.updateReleaseById(releaseId, userDetails.getUsername(), releaseRequest));
     }
 
     @Override

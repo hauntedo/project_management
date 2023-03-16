@@ -9,4 +9,6 @@ public interface ReleaseService {
     ReleaseResponse addRelease(ReleaseRequest releaseRequest, String username);
 
     ReleaseResponse getReleaseById(UUID releaseId);
+
+    ReleaseResponse updateReleaseById(UUID releaseId, String username, ReleaseRequest releaseRequest);
 }
