@@ -14,13 +14,13 @@ import java.time.Instant;
 
 @Service
 public class JwtTokenServiceImpl implements JwtTokenService {
-
-    private static final Duration JWT_TOKEN_VALIDITY = Duration.ofMinutes(20);
+    private final Duration jwtTokenValidityTime;
 
     private final Algorithm hmac512;
     private final JWTVerifier jwtVerifier;
 
-    public JwtTokenServiceImpl(@Value("${jwt.secret}") final String secret) {
+    public JwtTokenServiceImpl(@Value("${jwt.secret}") final String secret, @Value("${jwt.expiration.time}") final int time) {
+        this.jwtTokenValidityTime = Duration.ofMinutes(time);
         this.hmac512 = Algorithm.HMAC512(secret);
         this.jwtVerifier = JWT.require(this.hmac512).build();
     }
@@ -32,7 +32,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         return JWT.create()
                 .withSubject(userDetails.getUsername())
                 .withIssuedAt(now)
-                .withExpiresAt(now.plusMillis(JWT_TOKEN_VALIDITY.toMillis()))
+                .withExpiresAt(now.plusMillis(jwtTokenValidityTime.toMillis()))
                 .withIssuer("app")
                 .sign(this.hmac512);
     }
