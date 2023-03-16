@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -19,4 +20,6 @@ public class TaskResponse {
     private UserResponse author;
     private UserResponse developer;
     private String taskState;
+
+    private List<ReleaseResponse> releases;
 }

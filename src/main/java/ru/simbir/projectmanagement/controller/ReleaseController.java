@@ -33,7 +33,7 @@ public class ReleaseController implements ReleaseApi {
     }
 
     @Override
-    public ResponseEntity<ReleaseResponse> closeRelease(String parameter, UserDetails userDetails) {
-        return null;
+    public ResponseEntity<ReleaseResponse> closeRelease(UUID releaseId, UserDetails userDetails) {
+        return ResponseEntity.ok(releaseService.closeRelease(releaseId, userDetails.getUsername()));
     }
 }

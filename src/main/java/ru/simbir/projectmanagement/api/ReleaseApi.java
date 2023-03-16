@@ -28,7 +28,7 @@ public interface ReleaseApi {
                                                       @RequestBody @Valid ReleaseRequest releaseRequest);
 
     @PutMapping(value = "/{release-id}/close", produces = APPLICATION_JSON_VALUE)
-    ResponseEntity<ReleaseResponse> closeRelease(@PathVariable("release-id") String parameter,
+    ResponseEntity<ReleaseResponse> closeRelease(@PathVariable("release-id") UUID releaseId,
                                                  @AuthenticationPrincipal UserDetails userDetails);
 
 

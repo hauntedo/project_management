@@ -9,7 +9,7 @@ import ru.simbir.projectmanagement.model.Task;
 import java.util.Collection;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = ReleaseMapper.class)
 public interface TaskMapper {
 
     TaskResponse toResponse(Task task);

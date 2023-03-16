@@ -89,4 +89,19 @@ public class ReleaseServiceImpl implements ReleaseService {
             throw new AccessDeniedException("No access to control this release");
         }
     }
+
+    @Transactional
+    @Override
+    public ReleaseResponse closeRelease(UUID releaseId, String username) {
+        Release release = releaseRepository.findById(releaseId).orElseThrow(DataNotFoundException::new);
+        if (release.getDeveloper().getEmail().equals(username) || release.getTask().getAuthor().getEmail().equals(username)) {
+            if (release.getEnd() != null) {
+                throw new ReleaseException("Release already completed");
+            }
+            release.setEnd(Instant.now());
+            return releaseMapper.toResponse(releaseRepository.save(release));
+        } else {
+            throw new AccessDeniedException("No access to control this release");
+        }
+    }
 }

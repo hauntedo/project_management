@@ -11,4 +11,6 @@ public interface ReleaseService {
     ReleaseResponse getReleaseById(UUID releaseId);
 
     ReleaseResponse updateReleaseById(UUID releaseId, String username, ReleaseRequest releaseRequest);
+
+    ReleaseResponse closeRelease(UUID releaseId, String username);
 }
