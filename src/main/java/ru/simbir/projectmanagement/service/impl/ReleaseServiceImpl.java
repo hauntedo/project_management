@@ -69,7 +69,7 @@ public class ReleaseServiceImpl implements ReleaseService {
         LOGGER.info("#addRelease: find task by id {}", taskId);
         Optional<Task> optionalTask = taskRepository.findById(taskId);
         if (!optionalTask.isPresent()) {
-            LOGGER.warn("#addRelease: task by id {} not found. {}",taskId,
+            LOGGER.warn("#addRelease: task by id {} not found. {}", taskId,
                     DataNotFoundException.class.getSimpleName());
             throw new DataNotFoundException("Task by id " + taskId + " not found");
         }
@@ -136,7 +136,7 @@ public class ReleaseServiceImpl implements ReleaseService {
             return releaseMapper.toResponse(release);
         } else {
             LOGGER.warn("#updateReleaseById: no access to control release for current user by email {}. {}", username,
-                AccessDeniedException.class.getSimpleName());
+                    AccessDeniedException.class.getSimpleName());
             throw new AccessDeniedException("No access to control release for user by email " + username);
         }
     }
@@ -165,7 +165,7 @@ public class ReleaseServiceImpl implements ReleaseService {
             return releaseMapper.toResponse(release);
         } else {
             LOGGER.warn("#closeRelease: no access to control release for current user by email {}. {}", username,
-                AccessDeniedException.class.getSimpleName());
+                    AccessDeniedException.class.getSimpleName());
             throw new AccessDeniedException("No access to control release for user by email " + username);
         }
     }

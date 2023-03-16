@@ -217,6 +217,5 @@ public class ProjectServiceImpl implements ProjectService {
         LOGGER.info("#joinProjectByCode: try to save project by code {}", projectCode);
         projectRepository.save(project);
         LOGGER.info("#joinProjectByCode: save project by code {}", projectCode);
-        ;
     }
 }
