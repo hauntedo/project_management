@@ -8,6 +8,8 @@ import lombok.experimental.SuperBuilder;
 import ru.simbir.projectmanagement.utils.enums.Role;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @SuperBuilder
 @Getter
@@ -30,4 +32,7 @@ public class User extends AbstractEntity {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "user_role")
     private Role role;
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Project> projects = new HashSet<>();
 }

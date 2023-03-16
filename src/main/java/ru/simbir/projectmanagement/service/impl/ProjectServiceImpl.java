@@ -1,22 +1,28 @@
 package ru.simbir.projectmanagement.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.simbir.projectmanagement.dto.request.ProjectRequest;
+import ru.simbir.projectmanagement.dto.response.PageResponse;
 import ru.simbir.projectmanagement.dto.response.ProjectResponse;
+import ru.simbir.projectmanagement.dto.response.TaskResponse;
 import ru.simbir.projectmanagement.exception.DataNotFoundException;
 import ru.simbir.projectmanagement.exception.EntityStateException;
 import ru.simbir.projectmanagement.model.Project;
 import ru.simbir.projectmanagement.model.Task;
 import ru.simbir.projectmanagement.model.User;
 import ru.simbir.projectmanagement.repository.ProjectRepository;
+import ru.simbir.projectmanagement.repository.TaskRepository;
 import ru.simbir.projectmanagement.repository.UserRepository;
 import ru.simbir.projectmanagement.service.ProjectService;
 import ru.simbir.projectmanagement.utils.enums.ProjectState;
 import ru.simbir.projectmanagement.utils.enums.TaskState;
 import ru.simbir.projectmanagement.utils.mapper.ProjectMapper;
+import ru.simbir.projectmanagement.utils.mapper.TaskMapper;
 
 import java.util.UUID;
 
@@ -27,6 +33,8 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
     private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
+    private final TaskMapper taskMapper;
 
     private static void checkAccessToOperate(String username, String projectOwnerEmail) {
         if (!projectOwnerEmail.equals(username)) {
@@ -78,5 +86,41 @@ public class ProjectServiceImpl implements ProjectService {
         }
         project.setProjectState(ProjectState.DONE);
         return projectMapper.toResponse(projectRepository.save(project));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PageResponse<ProjectResponse> getProjects(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Project> projectPage = projectRepository.findAll(pageRequest);
+        return PageResponse.<ProjectResponse>builder()
+                .content(projectMapper.toList(projectPage.getContent()))
+                .totalElements(projectPage.getTotalElements())
+                .totalPages(projectPage.getTotalPages())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public ProjectResponse getProjectById(UUID projectId, String username) {
+        Project project = projectRepository.findById(projectId).orElseThrow(DataNotFoundException::new);
+        for (User user : project.getUsers()) {
+            if (user.getEmail().equals(username)) {
+                return projectMapper.toResponse(project);
+            }
+        }
+        throw new AccessDeniedException("No access project for current user");
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PageResponse<TaskResponse> getTasksByProjectId(UUID projectId, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Task> taskPage = taskRepository.findAllByProject_Id(projectId, pageRequest);
+        return PageResponse.<TaskResponse>builder()
+                .content(taskMapper.toList(taskPage.getContent()))
+                .totalPages(taskPage.getTotalPages())
+                .totalElements(taskPage.getTotalElements())
+                .build();
     }
 }

@@ -6,4 +6,5 @@ import ru.simbir.projectmanagement.model.Project;
 import java.util.UUID;
 
 public interface ProjectRepository extends JpaRepository<Project, UUID> {
+
 }
