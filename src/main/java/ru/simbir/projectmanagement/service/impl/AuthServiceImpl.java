@@ -1,6 +1,8 @@
 package ru.simbir.projectmanagement.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,6 +21,8 @@ import ru.simbir.projectmanagement.service.AuthService;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    private static final Logger LOGGER = LogManager.getLogger(AuthServiceImpl.class);
+
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JwtTokenService jwtTokenService;
@@ -32,6 +36,7 @@ public class AuthServiceImpl implements AuthService {
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
+        LOGGER.info("#authenticate: find user by email: {}", authenticationRequest.getEmail());
         UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
         return TokenResponse.builder()
                 .accessToken(jwtTokenService.generateToken(userDetails))

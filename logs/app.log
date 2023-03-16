@@ -1,0 +1,38 @@
+2023-03-16 22:18:31,754 INFO o.s.b.StartupInfoLogger [restartedMain] Starting ProjectManagementApplication using Java 11.0.18 on hauntedo with PID 37345 (/home/hauntedo/IdeaProjects/Project Management/target/classes started by hauntedo in /home/hauntedo/IdeaProjects/Project Management)
+2023-03-16 22:18:31,759 DEBUG o.s.b.StartupInfoLogger [restartedMain] Running with Spring Boot v2.7.9, Spring v5.3.25
+2023-03-16 22:18:31,759 INFO o.s.b.SpringApplication [restartedMain] No active profile set, falling back to 1 default profile: "default"
+2023-03-16 22:18:31,792 INFO o.s.b.l.DeferredLog [restartedMain] Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-03-16 22:18:31,793 INFO o.s.b.l.DeferredLog [restartedMain] For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-03-16 22:18:32,216 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-03-16 22:18:32,258 INFO o.s.d.r.c.RepositoryConfigurationDelegate [restartedMain] Finished Spring Data repository scanning in 38 ms. Found 4 JPA repository interfaces.
+2023-03-16 22:18:32,693 INFO o.s.b.w.e.t.TomcatWebServer [restartedMain] Tomcat initialized with port(s): 8080 (http)
+2023-03-16 22:18:32,701 INFO o.a.j.l.DirectJDKLog [restartedMain] Initializing ProtocolHandler ["http-nio-8080"]
+2023-03-16 22:18:32,702 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting service [Tomcat]
+2023-03-16 22:18:32,702 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting Servlet engine: [Apache Tomcat/9.0.71]
+2023-03-16 22:18:32,740 INFO o.a.j.l.DirectJDKLog [restartedMain] Initializing Spring embedded WebApplicationContext
+2023-03-16 22:18:32,740 INFO o.s.b.w.s.c.ServletWebServerApplicationContext [restartedMain] Root WebApplicationContext: initialization completed in 947 ms
+2023-03-16 22:18:32,873 INFO c.z.h.HikariDataSource [restartedMain] HikariPool-1 - Starting...
+2023-03-16 22:18:33,076 INFO c.z.h.HikariDataSource [restartedMain] HikariPool-1 - Start completed.
+2023-03-16 22:18:33,169 INFO l.l.c.JavaLogger [restartedMain] Set default schema name to public
+2023-03-16 22:18:33,229 INFO l.l.c.JavaLogger [restartedMain] Successfully acquired change log lock
+2023-03-16 22:18:33,459 INFO l.l.c.JavaLogger [restartedMain] Reading from public.databasechangelog
+2023-03-16 22:18:33,606 INFO l.l.c.JavaLogger [restartedMain] Successfully released change log lock
+2023-03-16 22:18:33,754 INFO o.h.j.i.u.LogHelper [restartedMain] HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-03-16 22:18:33,788 INFO o.h.Version [restartedMain] HHH000412: Hibernate ORM core version 5.6.15.Final
+2023-03-16 22:18:33,848 INFO o.h.a.c.r.j.JavaReflectionManager [restartedMain] HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2023-03-16 22:18:33,894 INFO o.h.d.Dialect [restartedMain] HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2023-03-16 22:18:34,225 INFO o.h.e.t.j.p.i.JtaPlatformInitiator [restartedMain] HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-03-16 22:18:34,230 INFO o.s.o.j.AbstractEntityManagerFactoryBean [restartedMain] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-03-16 22:18:34,482 DEBUG o.s.w.f.GenericFilterBean [restartedMain] Filter 'jwtRequestFilter' configured for use
+2023-03-16 22:18:34,683 WARN o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration [restartedMain] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-03-16 22:18:34,812 INFO o.s.s.w.DefaultSecurityFilterChain [restartedMain] Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@47ead5da, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1dbf82d8, org.springframework.security.web.context.SecurityContextPersistenceFilter@554d965b, org.springframework.security.web.header.HeaderWriterFilter@60b9c77b, org.springframework.web.filter.CorsFilter@5151623e, org.springframework.security.web.authentication.logout.LogoutFilter@6f1e7273, ru.simbir.projectmanagement.security.jwt.filter.JwtRequestFilter@6ba9c13d, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4cb1e4ab, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6926f726, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5659d8a3, org.springframework.security.web.session.SessionManagementFilter@2dafa78f, org.springframework.security.web.access.ExceptionTranslationFilter@130cd96, org.springframework.security.web.access.intercept.AuthorizationFilter@66d8b97e]
+2023-03-16 22:18:34,982 INFO o.s.b.d.a.OptionalLiveReloadServer [restartedMain] LiveReload server is running on port 35729
+2023-03-16 22:18:34,996 INFO o.a.j.l.DirectJDKLog [restartedMain] Starting ProtocolHandler ["http-nio-8080"]
+2023-03-16 22:18:35,005 INFO o.s.b.w.e.t.TomcatWebServer [restartedMain] Tomcat started on port(s): 8080 (http) with context path ''
+2023-03-16 22:18:35,013 INFO o.s.b.StartupInfoLogger [restartedMain] Started ProjectManagementApplication in 3.504 seconds (JVM running for 4.259)
+2023-03-16 22:18:35,016 TRACE r.s.p.ProjectManagementApplication [restartedMain] Trace log message
+2023-03-16 22:18:35,016 DEBUG r.s.p.ProjectManagementApplication [restartedMain] Debug log message
+2023-03-16 22:18:35,016 INFO r.s.p.ProjectManagementApplication [restartedMain] Info log message
+2023-03-16 22:18:35,016 ERROR r.s.p.ProjectManagementApplication [restartedMain] Error log message
+2023-03-16 22:18:35,016 WARN r.s.p.ProjectManagementApplication [restartedMain] Warn log message
+2023-03-16 22:18:35,016 FATAL r.s.p.ProjectManagementApplication [restartedMain] Fatal log message

@@ -1,6 +1,8 @@
 package ru.simbir.projectmanagement.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
@@ -27,12 +29,15 @@ import ru.simbir.projectmanagement.utils.mapper.TaskMapper;
 import ru.simbir.projectmanagement.utils.mapper.UserMapper;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
+
+    private static final Logger LOGGER = LogManager.getLogger(ProjectServiceImpl.class);
 
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
@@ -43,6 +48,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private static void checkAccessToOperate(String username, String projectOwnerEmail) {
         if (!projectOwnerEmail.equals(username)) {
+            LOGGER.error("#checkAccessToOperate: {}", projectOwnerEmail);
             throw new AccessDeniedException("No access to control a project");
         }
     }
@@ -50,56 +56,95 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public ProjectResponse createProject(ProjectRequest projectRequest, String username) {
-        User user = userRepository.findByEmail(username).orElseThrow(DataNotFoundException::new);
+        LOGGER.info("#createProject: find user by email {}", username);
+        Optional<User> optionalUser = userRepository.findByEmail(username);
+        if (!optionalUser.isPresent()) {
+            LOGGER.error("#createProject: user by email {} not found", username);
+            throw new DataNotFoundException("User by email {} " + username + " not found");
+        }
+        User user = optionalUser.get();
         Project newProject = projectMapper.toEntity(projectRequest);
         newProject.setProjectState(ProjectState.BACKLOG);
         newProject.setOwner(user);
         Set<User> set = new HashSet<>();
         set.add(user);
         newProject.setUsers(set);
-        return projectMapper.toResponse(projectRepository.save(newProject));
+        LOGGER.info("#createProject: try to save project {}", projectRequest.getCode());
+        newProject = projectRepository.save(newProject);
+        LOGGER.info("#createProject: project by id {} saved", newProject.getId());
+        return projectMapper.toResponse(newProject);
     }
 
     @Transactional
     @Override
     public ProjectResponse updateProjectById(UUID projectId, ProjectRequest projectRequest, String username) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(DataNotFoundException::new);
+        LOGGER.info("#updateProjectById: find project by id {}", projectId);
+        Optional<Project> optionalProject = projectRepository.findById(projectId);
+        if (!optionalProject.isPresent()) {
+            LOGGER.warn("#updateProjectById: project by id {} not found", projectId);
+            return ProjectResponse.builder().build();
+        }
+        Project project = optionalProject.get();
         checkAccessToOperate(username, project.getOwner().getEmail());
         projectMapper.update(projectRequest, project);
-        return projectMapper.toResponse(projectRepository.save(project));
+        LOGGER.info("#updateProjectById: try to save project by id {}", projectId);
+        project = projectRepository.save(project);
+        LOGGER.info("#updateProjectById: save project by id {}", projectId);
+        return projectMapper.toResponse(project);
     }
 
     @Transactional
     @Override
     public ProjectResponse startProject(UUID projectId, String username) {
-        Project project = projectRepository.findById(projectId).orElseThrow(DataNotFoundException::new);
+        LOGGER.info("#startProject: find project by id {}", projectId);
+        Optional<Project> optionalProject = projectRepository.findById(projectId);
+        if (!optionalProject.isPresent()) {
+            LOGGER.warn("#startProject: project by id {} not found", projectId);
+            return ProjectResponse.builder().build();
+        }
+        Project project = optionalProject.get();
         checkAccessToOperate(username, project.getOwner().getEmail());
         if (project.getProjectState() != ProjectState.BACKLOG) {
-            throw new EntityStateException("Project can only be run in backlog state");
+            LOGGER.error("#startProject: project by id {} can only be run in BACKLOG state: {}", projectId,
+                    EntityStateException.class.getSimpleName());
+            throw new EntityStateException("Project can only be run in BACKLOG state");
         }
         project.setProjectState(ProjectState.IN_PROGRESS);
-        return projectMapper.toResponse(projectRepository.save(project));
+        LOGGER.info("#startProject: try to save project by id {}", projectId);
+        project = projectRepository.save(project);
+        LOGGER.info("#startProject: save project by id {}", projectId);
+        return projectMapper.toResponse(project);
     }
 
     @Transactional
     @Override
     public ProjectResponse endProject(UUID projectId, String username) {
-        Project project = projectRepository.findById(projectId).orElseThrow(DataNotFoundException::new);
+        Optional<Project> optionalProject = projectRepository.findById(projectId);
+        if (!optionalProject.isPresent()) {
+            LOGGER.warn("#endProject: project by id {} not found", projectId);
+            return ProjectResponse.builder().build();
+        }
+        Project project = optionalProject.get();
         checkAccessToOperate(username, project.getOwner().getEmail());
         for (Task t : project.getTasks()) {
             if (!t.getTaskState().equals(TaskState.DONE)) {
+                LOGGER.error("#endProject: task state by id {} is not 'DONE': {}", t.getId(),
+                        EntityStateException.class.getSimpleName());
                 throw new EntityStateException("Project can only be closed if all tasks are in DONE status");
             }
         }
         project.setProjectState(ProjectState.DONE);
-        return projectMapper.toResponse(projectRepository.save(project));
+        LOGGER.info("#endProject: try to save project by id {}", projectId);
+        project = projectRepository.save(project);
+        LOGGER.info("#endProject: save project by id {}", projectId);
+        return projectMapper.toResponse(project);
     }
 
     @Transactional(readOnly = true)
     @Override
     public PageResponse<ProjectResponse> getProjects(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
+        LOGGER.info("#getProjects: find all projects");
         Page<Project> projectPage = projectRepository.findAll(pageRequest);
         return PageResponse.<ProjectResponse>builder()
                 .content(projectMapper.toList(projectPage.getContent()))
@@ -111,12 +156,19 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional(readOnly = true)
     @Override
     public ProjectResponse getProjectById(UUID projectId, String username) {
-        Project project = projectRepository.findById(projectId).orElseThrow(DataNotFoundException::new);
+        Optional<Project> optionalProject = projectRepository.findById(projectId);
+        if (!optionalProject.isPresent()) {
+            LOGGER.warn("#getProjectById: project by id {} not found", projectId);
+            return ProjectResponse.builder().build();
+        }
+        Project project = optionalProject.get();
         for (User user : project.getUsers()) {
             if (user.getEmail().equals(username)) {
                 return projectMapper.toResponse(project);
             }
         }
+        LOGGER.error("#getProjectById: no access for current user by email {}. {}", username,
+                AccessDeniedException.class.getSimpleName());
         throw new AccessDeniedException("No access project for current user");
     }
 
@@ -124,6 +176,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public PageResponse<TaskResponse> getTasksByProjectId(UUID projectId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
+        LOGGER.info("#getTasksByProjectId: find all tasks by project id {}", projectId);
         Page<Task> taskPage = taskRepository.findAllByProject_Id(projectId, pageRequest);
         return PageResponse.<TaskResponse>builder()
                 .content(taskMapper.toList(taskPage.getContent()))
@@ -136,6 +189,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public PageResponse<UserResponse> getUsersByProjectId(UUID projectId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
+        LOGGER.info("#getUsersByProjectId: find all users by project id {}", projectId);
         Page<User> userPage = userRepository.findAllByProjects_Id(projectId, pageRequest);
         return PageResponse.<UserResponse>builder()
                 .content(userMapper.toList(userPage.getContent()))
@@ -147,9 +201,22 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public void joinProjectByCode(String projectCode, String username) {
-        User user = userRepository.findByEmail(username).orElseThrow(DataNotFoundException::new);
-        Project project = projectRepository.findByCode(projectCode).orElseThrow(() -> new DataNotFoundException("Invalid project code"));
+        Optional<User> optionalUser = userRepository.findByEmail(username);
+        if (!optionalUser.isPresent()) {
+            LOGGER.error("#joinProjectByCode: user by email {} not found. {}", username, DataNotFoundException.class.getSimpleName());
+            throw new DataNotFoundException("Not found user by email " + username);
+        }
+        Optional<Project> optionalProject = projectRepository.findByCode(projectCode);
+        if (!optionalProject.isPresent()) {
+            LOGGER.error("#joinProjectByCode: not found project by code {}", projectCode);
+            throw new DataNotFoundException("Not found project by code " + projectCode);
+        }
+        User user = optionalUser.get();
+        Project project = optionalProject.get();
         project.getUsers().add(user);
+        LOGGER.info("#joinProjectByCode: try to save project by code {}", projectCode);
         projectRepository.save(project);
+        LOGGER.info("#joinProjectByCode: save project by code {}", projectCode);
+        ;
     }
 }
