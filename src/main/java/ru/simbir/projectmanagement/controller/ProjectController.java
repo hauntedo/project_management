@@ -6,12 +6,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RestController;
 import ru.simbir.projectmanagement.api.ProjectApi;
 import ru.simbir.projectmanagement.dto.request.ProjectRequest;
-import ru.simbir.projectmanagement.dto.response.PageResponse;
-import ru.simbir.projectmanagement.dto.response.ProjectResponse;
-import ru.simbir.projectmanagement.dto.response.TaskResponse;
-import ru.simbir.projectmanagement.dto.response.UserResponse;
+import ru.simbir.projectmanagement.dto.response.*;
 import ru.simbir.projectmanagement.service.ProjectService;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @RestController
@@ -59,5 +57,14 @@ public class ProjectController implements ProjectApi {
     @Override
     public ResponseEntity<PageResponse<UserResponse>> getUsersByProjectId(UUID projectId, int page, int size) {
         return ResponseEntity.ok(projectService.getUsersByProjectId(projectId, page, size));
+    }
+
+    @Override
+    public ResponseEntity<SuccessResponse> joinProjectByCode(String projectCode, UserDetails userDetails) {
+        projectService.joinProjectByCode(projectCode, userDetails.getUsername());
+        return ResponseEntity.ok(SuccessResponse.builder()
+                .time(Instant.now())
+                .message("Successfully joined")
+                .build());
     }
 }

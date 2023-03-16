@@ -29,6 +29,9 @@ public class Project extends AbstractEntity {
     @Column(name = "project_description")
     private String description;
 
+    @Column(name = "project_code", unique = true, nullable = false)
+    private String code;
+
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;

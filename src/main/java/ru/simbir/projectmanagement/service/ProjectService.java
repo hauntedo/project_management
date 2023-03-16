@@ -26,4 +26,6 @@ public interface ProjectService {
     PageResponse<TaskResponse> getTasksByProjectId(UUID projectId, int page, int size);
 
     PageResponse<UserResponse> getUsersByProjectId(UUID projectId, int page, int size);
+
+    void joinProjectByCode(String projectCode, String username);
 }

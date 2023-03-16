@@ -16,4 +16,7 @@ public class ProjectRequest {
 
     private String description;
 
+    @NotNull
+    private String code;
+
 }

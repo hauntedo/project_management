@@ -18,10 +18,6 @@ import ru.simbir.projectmanagement.security.jwt.filter.JwtRequestFilter;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
 
-    private static final String[] PERMIT_ALL = {
-            "/api/authenticate"
-    };
-
     private final JwtRequestFilter jwtRequestFilter;
 
     @Bean
@@ -32,9 +28,9 @@ public class SecurityConfiguration {
 //                .antMatchers("/api/auth/**").permitAll()
 //                .anyRequest().authenticated().and()
                 .anyRequest().permitAll().and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).build();
     }
 
     @Bean

@@ -26,4 +26,6 @@ public interface UserApi {
     ResponseEntity<PageResponse<ProjectResponse>> getUserProjects(@RequestParam(value = "page", required = false) int page,
                                                                   @RequestParam(value = "size", required = false) int size,
                                                                   @PathVariable("user-id") UUID userId);
+
+
 }

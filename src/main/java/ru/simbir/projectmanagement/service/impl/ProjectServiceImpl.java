@@ -132,6 +132,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public PageResponse<UserResponse> getUsersByProjectId(UUID projectId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -141,5 +142,14 @@ public class ProjectServiceImpl implements ProjectService {
                 .totalPages(userPage.getTotalPages())
                 .totalElements(userPage.getTotalElements())
                 .build();
+    }
+
+    @Transactional
+    @Override
+    public void joinProjectByCode(String projectCode, String username) {
+        User user = userRepository.findByEmail(username).orElseThrow(DataNotFoundException::new);
+        Project project = projectRepository.findByCode(projectCode).orElseThrow(() -> new DataNotFoundException("Invalid project code"));
+        project.getUsers().add(user);
+        projectRepository.save(project);
     }
 }
