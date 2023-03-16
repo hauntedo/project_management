@@ -1,7 +1,5 @@
 package ru.simbir.projectmanagement.api;
 
-import org.apache.coyote.Response;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.simbir.projectmanagement.dto.request.UserUpdateRequest;
@@ -12,7 +10,7 @@ import ru.simbir.projectmanagement.dto.response.UserResponse;
 import javax.validation.Valid;
 import java.util.UUID;
 
-import static org.springframework.http.MediaType.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping("/api/users")
 public interface UserApi {

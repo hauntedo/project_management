@@ -4,6 +4,7 @@ import ru.simbir.projectmanagement.dto.request.ProjectRequest;
 import ru.simbir.projectmanagement.dto.response.PageResponse;
 import ru.simbir.projectmanagement.dto.response.ProjectResponse;
 import ru.simbir.projectmanagement.dto.response.TaskResponse;
+import ru.simbir.projectmanagement.dto.response.UserResponse;
 
 import java.util.UUID;
 
@@ -23,4 +24,6 @@ public interface ProjectService {
     ProjectResponse getProjectById(UUID projectId, String username);
 
     PageResponse<TaskResponse> getTasksByProjectId(UUID projectId, int page, int size);
+
+    PageResponse<UserResponse> getUsersByProjectId(UUID projectId, int page, int size);
 }

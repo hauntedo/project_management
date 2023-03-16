@@ -9,5 +9,6 @@ import ru.simbir.projectmanagement.model.Release;
 public interface ReleaseMapper {
 
     ReleaseResponse toResponse(Release release);
+
     Release toEntity(ReleaseRequest releaseRequest);
 }

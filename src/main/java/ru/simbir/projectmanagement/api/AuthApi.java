@@ -5,11 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.simbir.projectmanagement.dto.request.AuthenticationRequest;
-import ru.simbir.projectmanagement.dto.request.RegistrationRequest;
 import ru.simbir.projectmanagement.dto.response.TokenResponse;
-
-import javax.validation.Valid;
-import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 

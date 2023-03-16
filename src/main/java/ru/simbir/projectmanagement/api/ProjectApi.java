@@ -8,6 +8,7 @@ import ru.simbir.projectmanagement.dto.request.ProjectRequest;
 import ru.simbir.projectmanagement.dto.response.PageResponse;
 import ru.simbir.projectmanagement.dto.response.ProjectResponse;
 import ru.simbir.projectmanagement.dto.response.TaskResponse;
+import ru.simbir.projectmanagement.dto.response.UserResponse;
 
 import javax.validation.Valid;
 import java.util.UUID;
@@ -46,4 +47,9 @@ public interface ProjectApi {
     ResponseEntity<PageResponse<TaskResponse>> getProjectTasks(@PathVariable("project-id") UUID projectId,
                                                                @RequestParam(value = "page", required = false) int page,
                                                                @RequestParam(value = "size", required = false) int size);
+
+    @GetMapping(value = "/{project-id}/users", produces = APPLICATION_JSON_VALUE)
+    ResponseEntity<PageResponse<UserResponse>> getUsersByProjectId(@PathVariable("project-id") UUID projectId,
+                                                                   @RequestParam(value = "page", required = false) int page,
+                                                                   @RequestParam(value = "size", required = false) int size);
 }

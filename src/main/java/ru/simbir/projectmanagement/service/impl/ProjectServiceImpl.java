@@ -10,6 +10,7 @@ import ru.simbir.projectmanagement.dto.request.ProjectRequest;
 import ru.simbir.projectmanagement.dto.response.PageResponse;
 import ru.simbir.projectmanagement.dto.response.ProjectResponse;
 import ru.simbir.projectmanagement.dto.response.TaskResponse;
+import ru.simbir.projectmanagement.dto.response.UserResponse;
 import ru.simbir.projectmanagement.exception.DataNotFoundException;
 import ru.simbir.projectmanagement.exception.EntityStateException;
 import ru.simbir.projectmanagement.model.Project;
@@ -23,7 +24,10 @@ import ru.simbir.projectmanagement.utils.enums.ProjectState;
 import ru.simbir.projectmanagement.utils.enums.TaskState;
 import ru.simbir.projectmanagement.utils.mapper.ProjectMapper;
 import ru.simbir.projectmanagement.utils.mapper.TaskMapper;
+import ru.simbir.projectmanagement.utils.mapper.UserMapper;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -35,6 +39,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final UserMapper userMapper;
 
     private static void checkAccessToOperate(String username, String projectOwnerEmail) {
         if (!projectOwnerEmail.equals(username)) {
@@ -49,6 +54,9 @@ public class ProjectServiceImpl implements ProjectService {
         Project newProject = projectMapper.toEntity(projectRequest);
         newProject.setProjectState(ProjectState.BACKLOG);
         newProject.setOwner(user);
+        Set<User> set = new HashSet<>();
+        set.add(user);
+        newProject.setUsers(set);
         return projectMapper.toResponse(projectRepository.save(newProject));
     }
 
@@ -121,6 +129,17 @@ public class ProjectServiceImpl implements ProjectService {
                 .content(taskMapper.toList(taskPage.getContent()))
                 .totalPages(taskPage.getTotalPages())
                 .totalElements(taskPage.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponse<UserResponse> getUsersByProjectId(UUID projectId, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<User> userPage = userRepository.findAllByProjects_Id(projectId, pageRequest);
+        return PageResponse.<UserResponse>builder()
+                .content(userMapper.toList(userPage.getContent()))
+                .totalPages(userPage.getTotalPages())
+                .totalElements(userPage.getTotalElements())
                 .build();
     }
 }

@@ -9,6 +9,7 @@ import ru.simbir.projectmanagement.dto.request.ProjectRequest;
 import ru.simbir.projectmanagement.dto.response.PageResponse;
 import ru.simbir.projectmanagement.dto.response.ProjectResponse;
 import ru.simbir.projectmanagement.dto.response.TaskResponse;
+import ru.simbir.projectmanagement.dto.response.UserResponse;
 import ru.simbir.projectmanagement.service.ProjectService;
 
 import java.util.UUID;
@@ -53,5 +54,10 @@ public class ProjectController implements ProjectApi {
     @Override
     public ResponseEntity<PageResponse<TaskResponse>> getProjectTasks(UUID projectId, int page, int size) {
         return ResponseEntity.ok(projectService.getTasksByProjectId(projectId, page, size));
+    }
+
+    @Override
+    public ResponseEntity<PageResponse<UserResponse>> getUsersByProjectId(UUID projectId, int page, int size) {
+        return ResponseEntity.ok(projectService.getUsersByProjectId(projectId, page, size));
     }
 }
