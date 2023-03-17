@@ -55,7 +55,8 @@ public interface ReleaseService {
             throws ReleaseException, DataNotFoundException, AccessDeniedException;
 
     /**
-     * Метод для закрытия релиза. Устанавливает время завершения
+     * Метод для закрытия релиза. Устанавливает время завершения, если релиз еще не был закрыт. Релиз может закрыть
+     * автор или исполнитель задачи
      *
      * @param releaseId - id релиза
      * @param username  - email текущего пользователя

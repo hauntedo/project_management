@@ -1,5 +1,6 @@
 package ru.simbir.projectmanagement.api;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,19 +18,19 @@ public interface ReleaseApi {
 
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     ResponseEntity<ReleaseResponse> addRelease(@RequestBody @Valid ReleaseRequest releaseRequest,
-                                               @AuthenticationPrincipal UserDetails userDetails);
+                                               @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails);
 
     @GetMapping(value = "/{release-id}", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<ReleaseResponse> getReleaseById(@PathVariable("release-id") UUID releaseId);
 
     @PutMapping(value = "/{release-id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     ResponseEntity<ReleaseResponse> updateReleaseById(@PathVariable("release-id") UUID releaseId,
-                                                      @AuthenticationPrincipal UserDetails userDetails,
+                                                      @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails,
                                                       @RequestBody @Valid ReleaseRequest releaseRequest);
 
     @PutMapping(value = "/{release-id}/close", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<ReleaseResponse> closeRelease(@PathVariable("release-id") UUID releaseId,
-                                                 @AuthenticationPrincipal UserDetails userDetails);
+                                                 @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails);
 
 
 }

@@ -1,5 +1,6 @@
 package ru.simbir.projectmanagement.api;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,12 +19,12 @@ public interface TaskApi {
 
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     ResponseEntity<TaskResponse> addTask(@RequestBody @Valid TaskRequest taskRequest,
-                                         @AuthenticationPrincipal UserDetails userDetails);
+                                         @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails);
 
     @PutMapping(value = "/{task-id}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     ResponseEntity<TaskResponse> updateTaskById(@RequestBody @Valid TaskRequest taskRequest,
                                                 @PathVariable("task-id") UUID taskId,
-                                                @AuthenticationPrincipal UserDetails userDetails);
+                                                @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails);
 
 
     @GetMapping(value = "/{task-id}", produces = APPLICATION_JSON_VALUE)
@@ -31,18 +32,18 @@ public interface TaskApi {
 
     @DeleteMapping(value = "/{task-id}", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<SuccessResponse> deleteTaskById(@PathVariable("task-id") UUID taskId,
-                                                   @AuthenticationPrincipal UserDetails userDetails);
+                                                   @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails);
 
     @PutMapping(value = "/{task-id}/backlog", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<TaskResponse> updateBacklogTask(@PathVariable("task-id") UUID taskId,
-                                                   @AuthenticationPrincipal UserDetails userDetails);
+                                                   @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails);
 
     @PutMapping(value = "/{task-id}/in-progress", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<TaskResponse> updateInProgressTask(@PathVariable("task-id") UUID taskId,
-                                                      @AuthenticationPrincipal UserDetails userDetails);
+                                                      @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails);
 
     @PutMapping(value = "/{task-id}/done", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<TaskResponse> updateDoneTask(@PathVariable("task-id") UUID taskId,
-                                                @AuthenticationPrincipal UserDetails userDetails);
+                                                @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails);
 
 }
