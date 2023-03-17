@@ -36,11 +36,7 @@ public class TaskController implements TaskApi {
 
     @Override
     public ResponseEntity<SuccessResponse> deleteTaskById(UUID taskId, UserDetails userDetails) {
-        taskService.deleteTaskById(taskId, userDetails.getUsername());
-        return ResponseEntity.ok(SuccessResponse.builder()
-                .message("Task deleted successfully")
-                .time(Instant.now())
-                .build());
+        return ResponseEntity.ok(taskService.deleteTaskById(taskId, userDetails.getUsername()));
     }
 
     @Override

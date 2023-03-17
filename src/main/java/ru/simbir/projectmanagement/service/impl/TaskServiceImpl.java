@@ -7,9 +7,10 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.simbir.projectmanagement.dto.request.TaskRequest;
+import ru.simbir.projectmanagement.dto.response.SuccessResponse;
 import ru.simbir.projectmanagement.dto.response.TaskResponse;
 import ru.simbir.projectmanagement.exception.DataNotFoundException;
-import ru.simbir.projectmanagement.exception.TaskExecutionException;
+import ru.simbir.projectmanagement.exception.TaskException;
 import ru.simbir.projectmanagement.model.Project;
 import ru.simbir.projectmanagement.model.Release;
 import ru.simbir.projectmanagement.model.Task;
@@ -22,6 +23,7 @@ import ru.simbir.projectmanagement.utils.enums.ProjectState;
 import ru.simbir.projectmanagement.utils.enums.TaskState;
 import ru.simbir.projectmanagement.utils.mapper.TaskMapper;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,8 +51,8 @@ public class TaskServiceImpl implements TaskService {
         for (Release release : task.getReleases()) {
             if (release.getEnd() == null) {
                 LOGGER.warn("#checkReleaseState: release by id {} in task by id {} is not completed. {}",
-                        release.getId(), task.getId(), TaskExecutionException.class.getSimpleName());
-                throw new TaskExecutionException("Cannot complete a task if one release is not completed");
+                        release.getId(), task.getId(), TaskException.class.getSimpleName());
+                throw new TaskException("Cannot complete a task if one release is not completed");
             }
         }
     }
@@ -114,7 +116,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    public void deleteTaskById(UUID taskId, String username) {
+    public SuccessResponse deleteTaskById(UUID taskId, String username) {
         LOGGER.info("#deleteTaskById: find task by id {}", taskId);
         Optional<Task> optionalTask = taskRepository.findById(taskId);
         if (!optionalTask.isPresent()) {
@@ -126,7 +128,10 @@ public class TaskServiceImpl implements TaskService {
         LOGGER.info("#deleteTaskById: try to delete task by id {}", taskId);
         taskRepository.delete(task);
         LOGGER.info("#deleteTaskById: task by id {} deleted", taskId);
-
+        return SuccessResponse.builder()
+                .message("Task deleted successfully")
+                .time(Instant.now())
+                .build();
     }
 
     @Transactional
@@ -141,8 +146,8 @@ public class TaskServiceImpl implements TaskService {
         Task task = optionalTask.get();
         if (!task.getTaskState().equals(TaskState.IN_PROGRESS)) {
             LOGGER.warn("#updateTaskToBacklog: task by id {} is not running. {}", taskId,
-                    TaskExecutionException.class.getSimpleName());
-            throw new TaskExecutionException("Task by id " + taskId + " is not running");
+                    TaskException.class.getSimpleName());
+            throw new TaskException("Task by id " + taskId + " is not running");
         }
         if (task.getAuthor().getEmail().equals(username) || task.getDeveloper().getEmail().equals(username)) {
             task.setTaskState(TaskState.BACKLOG);
@@ -177,20 +182,28 @@ public class TaskServiceImpl implements TaskService {
         User user = optionalUser.get();
         if (!task.getProject().getProjectState().equals(ProjectState.IN_PROGRESS)) {
             LOGGER.warn("#updateTaskToInProgress: task by id {} has not state IN_PROGRESS. {}", taskId,
-                    TaskExecutionException.class.getSimpleName());
-            throw new TaskExecutionException("Task can only be moved to a state 'IN_PROGRESS', when the project is running");
+                    TaskException.class.getSimpleName());
+            throw new TaskException("Task can only be moved to a state 'IN_PROGRESS', when the project is running");
         }
         if (task.getDeveloper() != null || task.getTaskState().equals(TaskState.IN_PROGRESS)) {
             LOGGER.warn("#updateTaskToInProgress: task by id {} already started. {}", taskId,
-                    TaskExecutionException.class.getSimpleName());
-            throw new TaskExecutionException("Task is running");
+                    TaskException.class.getSimpleName());
+            throw new TaskException("Task is running");
         }
-        task.setDeveloper(user);
-        task.setTaskState(TaskState.IN_PROGRESS);
-        LOGGER.info("#updateTaskToInProgress: try to save task by id {}", taskId);
-        task = taskRepository.save(task);
-        LOGGER.info("#updateTaskToInProgress: task by id {} saved", task.getId());
-        return taskMapper.toResponse(task);
+        for (User u : task.getProject().getUsers()) {
+            if (u.getEmail().equals(username)) {
+                task.setDeveloper(user);
+                task.setTaskState(TaskState.IN_PROGRESS);
+                LOGGER.info("#updateTaskToInProgress: try to save task by id {}", taskId);
+                task = taskRepository.save(task);
+                LOGGER.info("#updateTaskToInProgress: task by id {} saved", task.getId());
+                return taskMapper.toResponse(task);
+            }
+        }
+        LOGGER.warn("#updateTaskToInProgress: no access to operate task by id {} for user by email {}. {}",
+                task.getId(), username, AccessDeniedException.class.getSimpleName());
+        throw new AccessDeniedException("No access to operate this task: " + task.getId());
+
     }
 
     @Transactional

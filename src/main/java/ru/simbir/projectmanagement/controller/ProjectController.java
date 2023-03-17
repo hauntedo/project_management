@@ -61,10 +61,6 @@ public class ProjectController implements ProjectApi {
 
     @Override
     public ResponseEntity<SuccessResponse> joinProjectByCode(String projectCode, UserDetails userDetails) {
-        projectService.joinProjectByCode(projectCode, userDetails.getUsername());
-        return ResponseEntity.ok(SuccessResponse.builder()
-                .time(Instant.now())
-                .message("Successfully joined")
-                .build());
+        return ResponseEntity.ok(projectService.joinProjectByCode(projectCode, userDetails.getUsername()));
     }
 }

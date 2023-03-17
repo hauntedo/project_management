@@ -30,14 +30,15 @@ public class AuthServiceImpl implements AuthService {
     @Transactional(readOnly = true)
     @Override
     public TokenResponse authenticate(AuthenticationRequest authenticationRequest) {
+        String email = authenticationRequest.getEmail();
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email,
                     authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        LOGGER.info("#authenticate: find user by email: {}", authenticationRequest.getEmail());
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
+        LOGGER.info("#authenticate: find user by email: {}", email);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         return TokenResponse.builder()
                 .accessToken(jwtTokenService.generateToken(userDetails))
                 .build();

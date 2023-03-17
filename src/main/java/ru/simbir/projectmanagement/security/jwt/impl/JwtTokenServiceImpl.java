@@ -19,8 +19,8 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     private final Algorithm hmac512;
     private final JWTVerifier jwtVerifier;
 
-    public JwtTokenServiceImpl(@Value("${jwt.secret}") final String secret, @Value("${jwt.expiration.time}") final int time) {
-        this.jwtTokenValidityTime = Duration.ofMinutes(time);
+    public JwtTokenServiceImpl(@Value("${jwt.secret}") final String secret, @Value("${jwt.expiration.time}") final long time) {
+        this.jwtTokenValidityTime = Duration.ofSeconds(time);
         this.hmac512 = Algorithm.HMAC512(secret);
         this.jwtVerifier = JWT.require(this.hmac512).build();
     }

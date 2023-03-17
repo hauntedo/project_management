@@ -48,7 +48,7 @@ public class ReleaseServiceImpl implements ReleaseService {
                 }
                 if (release.getVersion().compareTo(releaseRequest.getVersion()) >= 0) {
                     LOGGER.warn("#validateRelease: release by id {} is not completed. {}", release.getId(),
-                            ReleaseException.class.getSimpleName());
+                            ReleaseVersionException.class.getSimpleName());
                     throw new ReleaseVersionException("Current version of the release is smaller than the existing ones");
                 }
             }

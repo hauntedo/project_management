@@ -9,10 +9,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.simbir.projectmanagement.dto.request.ProjectRequest;
-import ru.simbir.projectmanagement.dto.response.PageResponse;
-import ru.simbir.projectmanagement.dto.response.ProjectResponse;
-import ru.simbir.projectmanagement.dto.response.TaskResponse;
-import ru.simbir.projectmanagement.dto.response.UserResponse;
+import ru.simbir.projectmanagement.dto.response.*;
 import ru.simbir.projectmanagement.exception.DataNotFoundException;
 import ru.simbir.projectmanagement.exception.EntityStateException;
 import ru.simbir.projectmanagement.model.Project;
@@ -28,6 +25,7 @@ import ru.simbir.projectmanagement.utils.mapper.ProjectMapper;
 import ru.simbir.projectmanagement.utils.mapper.TaskMapper;
 import ru.simbir.projectmanagement.utils.mapper.UserMapper;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -82,7 +80,7 @@ public class ProjectServiceImpl implements ProjectService {
         Optional<Project> optionalProject = projectRepository.findById(projectId);
         if (!optionalProject.isPresent()) {
             LOGGER.warn("#updateProjectById: project by id {} not found", projectId);
-            return ProjectResponse.builder().build();
+            throw new DataNotFoundException("Project by id {} " + projectId + " not found");
         }
         Project project = optionalProject.get();
         checkAccessToOperate(username, project.getOwner().getEmail());
@@ -100,7 +98,7 @@ public class ProjectServiceImpl implements ProjectService {
         Optional<Project> optionalProject = projectRepository.findById(projectId);
         if (!optionalProject.isPresent()) {
             LOGGER.warn("#startProject: project by id {} not found", projectId);
-            return ProjectResponse.builder().build();
+            throw new DataNotFoundException("Project by id {} " + projectId + " not found");
         }
         Project project = optionalProject.get();
         checkAccessToOperate(username, project.getOwner().getEmail());
@@ -122,7 +120,7 @@ public class ProjectServiceImpl implements ProjectService {
         Optional<Project> optionalProject = projectRepository.findById(projectId);
         if (!optionalProject.isPresent()) {
             LOGGER.warn("#endProject: project by id {} not found", projectId);
-            return ProjectResponse.builder().build();
+            throw new DataNotFoundException("Project by id {} " + projectId + " not found");
         }
         Project project = optionalProject.get();
         checkAccessToOperate(username, project.getOwner().getEmail());
@@ -200,7 +198,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public void joinProjectByCode(String projectCode, String username) {
+    public SuccessResponse joinProjectByCode(String projectCode, String username) {
         Optional<User> optionalUser = userRepository.findByEmail(username);
         if (!optionalUser.isPresent()) {
             LOGGER.error("#joinProjectByCode: user by email {} not found. {}", username, DataNotFoundException.class.getSimpleName());
@@ -217,5 +215,9 @@ public class ProjectServiceImpl implements ProjectService {
         LOGGER.info("#joinProjectByCode: try to save project by code {}", projectCode);
         projectRepository.save(project);
         LOGGER.info("#joinProjectByCode: save project by code {}", projectCode);
+        return SuccessResponse.builder()
+                .time(Instant.now())
+                .message("Successfully joined")
+                .build();
     }
 }
