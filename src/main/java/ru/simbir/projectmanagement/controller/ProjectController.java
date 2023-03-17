@@ -25,11 +25,6 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
-    public ResponseEntity<PageResponse<ProjectResponse>> getProjects(int page, int size) {
-        return ResponseEntity.ok(projectService.getProjects(page, size));
-    }
-
-    @Override
     public ResponseEntity<ProjectResponse> getProjectById(UUID projectId, UserDetails userDetails) {
         return ResponseEntity.ok(projectService.getProjectById(projectId, userDetails.getUsername()));
     }

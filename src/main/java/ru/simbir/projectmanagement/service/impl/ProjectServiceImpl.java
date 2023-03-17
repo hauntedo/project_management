@@ -140,19 +140,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional(readOnly = true)
     @Override
-    public PageResponse<ProjectResponse> getProjects(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        LOGGER.info("#getProjects: find all projects");
-        Page<Project> projectPage = projectRepository.findAll(pageRequest);
-        return PageResponse.<ProjectResponse>builder()
-                .content(projectMapper.toList(projectPage.getContent()))
-                .totalElements(projectPage.getTotalElements())
-                .totalPages(projectPage.getTotalPages())
-                .build();
-    }
-
-    @Transactional(readOnly = true)
-    @Override
     public ProjectResponse getProjectById(UUID projectId, String username) {
         Optional<Project> optionalProject = projectRepository.findById(projectId);
         if (!optionalProject.isPresent()) {

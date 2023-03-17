@@ -65,18 +65,10 @@ public interface ProjectService {
      */
     ProjectResponse endProject(UUID projectId, String username);
 
-    /**
-     * Метод для получения списка всех проектов с пагинацией.
-     *
-     * @param page - страница
-     * @param size - количество элементов в странице
-     * @return список проектов с пагинацией
-     */
-    PageResponse<ProjectResponse> getProjects(int page, int size);
 
     /**
      * Метод для получения проекта по id. Проверяет, является ли пользователем создателем проекта(owner) или же
-     * участвует в разработке проекта(users). Для обычных пользователей
+     * участвует в разработке проекта(users).
      *
      * @param username  - email текущего пользователя, полученного из user details
      * @param projectId - id проекта, который подлежит обновлению

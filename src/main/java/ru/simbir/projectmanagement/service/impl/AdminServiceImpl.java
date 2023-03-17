@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.simbir.projectmanagement.dto.response.*;
 import ru.simbir.projectmanagement.model.Project;
 import ru.simbir.projectmanagement.model.Release;
@@ -36,6 +37,7 @@ public class AdminServiceImpl implements AdminService {
     private final ReleaseRepository releaseRepository;
     private final ReleaseMapper releaseMapper;
 
+    @Transactional(readOnly = true)
     @Override
     public PageResponse<TaskResponse> getTasks(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -48,6 +50,7 @@ public class AdminServiceImpl implements AdminService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public PageResponse<ReleaseResponse> getReleases(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -60,6 +63,7 @@ public class AdminServiceImpl implements AdminService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public PageResponse<ProjectResponse> getProjects(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -72,6 +76,7 @@ public class AdminServiceImpl implements AdminService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public PageResponse<UserResponse> getUsers(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);

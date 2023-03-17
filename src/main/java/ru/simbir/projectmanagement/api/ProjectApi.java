@@ -24,11 +24,6 @@ public interface ProjectApi {
                                                   @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails);
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
-    ResponseEntity<PageResponse<ProjectResponse>> getProjects(@RequestParam(value = "page", required = false) int page,
-                                                              @RequestParam(value = "size", required = false) int size);
-
-    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(value = "/{project-id}", produces = APPLICATION_JSON_VALUE)
     ResponseEntity<ProjectResponse> getProjectById(@PathVariable("project-id") UUID projectId,
                                                    @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails);
