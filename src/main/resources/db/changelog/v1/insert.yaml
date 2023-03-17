@@ -1,0 +1,256 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1678978478486-16
+      author: hauntedo (generated)
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  value: e0d78c20-3234-4ffa-a1e8-cd918bab0b7c
+              - column:
+                  name: create_date
+                  value: 2023-03-17 23:18:41.820949
+              - column:
+                  name: email
+                  value: a@a.a
+              - column:
+                  name: full_name
+                  value: a
+              - column:
+                  name: password
+                  value: $2a$10$PJ5iLu0ybxKi8BWMNcOn9.kxsJ/5BkeENGWmZ8VLaBdeqhSjVP8YG
+              - column:
+                  name: user_role
+                  value: USER
+            schemaName: public
+            tableName: users
+
+  - changeSet:
+      id: 1678978478486-17
+      author: hauntedo (generated)
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  value: 0d3a7117-9617-4160-95a5-334a6cb6e516
+              - column:
+                  name: create_date
+                  value: 2023-03-17 20:29:34.742045
+              - column:
+                  name: email
+                  value: b@b.b
+              - column:
+                  name: full_name
+                  value: b
+              - column:
+                  name: password
+                  value: $2a$10$PJ5iLu0ybxKi8BWMNcOn9.kxsJ/5BkeENGWmZ8VLaBdeqhSjVP8YG
+              - column:
+                  name: user_role
+                  value: USER
+            schemaName: public
+            tableName: users
+  - changeSet:
+      id: 1678978478486-18
+      author: hauntedo (generated)
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  value: 8dfb2047-273f-4dc0-b5e6-67c471fa2aaf
+              - column:
+                  name: create_date
+                  value: 2023-03-17 20:29:34.742045
+              - column:
+                  name: email
+                  value: c@c.c
+              - column:
+                  name: full_name
+                  value: c
+              - column:
+                  name: password
+                  value: $2a$10$PJ5iLu0ybxKi8BWMNcOn9.kxsJ/5BkeENGWmZ8VLaBdeqhSjVP8YG
+              - column:
+                  name: user_role
+                  value: USER
+            schemaName: public
+            tableName: users
+  - changeSet:
+      id: 1678978478486-19
+      author: hauntedo (generated)
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  value: 85147677-4b30-4a95-aef9-1d24f27e1c4e
+              - column:
+                  name: create_date
+                  value: 2023-03-17 23:26:37.988825
+              - column:
+                  name: project_name
+                  value: project1
+              - column:
+                  name: project_description
+                  value: project1
+              - column:
+                  name: project_code
+                  value: project1
+              - column:
+                  name: project_state
+                  value: BACKLOG
+              - column:
+                  name: owner_id
+                  value: e0d78c20-3234-4ffa-a1e8-cd918bab0b7c
+            schemaName: public
+            tableName: projects
+
+  - changeSet:
+      id: 1678978478486-20
+      author: hauntedo (generated)
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  value: 0e26ef98-1b6b-4c0a-a102-50bff53e210e
+              - column:
+                  name: create_date
+                  value: 2023-03-17 23:26:37.988825
+              - column:
+                  name: project_name
+                  value: project2
+              - column:
+                  name: project_description
+                  value: project2
+              - column:
+                  name: project_code
+                  value: project2
+              - column:
+                  name: project_state
+                  value: BACKLOG
+              - column:
+                  name: owner_id
+                  value: e0d78c20-3234-4ffa-a1e8-cd918bab0b7c
+            schemaName: public
+            tableName: projects
+
+  - changeSet:
+      id: 1678978478486-21
+      author: hauntedo (generated)
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  value: 0c285669-378f-4d07-b033-2b9a018c5a6f
+              - column:
+                  name: create_date
+                  value: 2023-03-17 23:27:50.245790
+              - column:
+                  name: task_name
+                  value: task1
+              - column:
+                  name: task_description
+                  value: task1
+              - column:
+                  name: task_state
+                  value: BACKLOG
+              - column:
+                  name: author_id
+                  value: e0d78c20-3234-4ffa-a1e8-cd918bab0b7c
+              - column:
+                  name: project_id
+                  value: 85147677-4b30-4a95-aef9-1d24f27e1c4e
+            schemaName: public
+            tableName: tasks
+
+  - changeSet:
+      id: 1678978478486-22
+      author: hauntedo (generated)
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  value: 55ec5204-fe26-4ebc-bf24-4528a1434deb
+              - column:
+                  name: create_date
+                  value: 2023-03-17 23:27:50.245790
+              - column:
+                  name: task_name
+                  value: task2
+              - column:
+                  name: task_description
+                  value: task2
+              - column:
+                  name: task_state
+                  value: BACKLOG
+              - column:
+                  name: author_id
+                  value: e0d78c20-3234-4ffa-a1e8-cd918bab0b7c
+              - column:
+                  name: project_id
+                  value: 85147677-4b30-4a95-aef9-1d24f27e1c4e
+            schemaName: public
+            tableName: tasks
+
+  - changeSet:
+      id: 1678978478486-23
+      author: hauntedo (generated)
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: user_id
+                  value: e0d78c20-3234-4ffa-a1e8-cd918bab0b7c
+              - column:
+                  name: project_id
+                  value: 85147677-4b30-4a95-aef9-1d24f27e1c4e
+            schemaName: public
+            tableName: project_user
+
+  - changeSet:
+      id: 1678978478486-24
+      author: hauntedo (generated)
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: user_id
+                  value: e0d78c20-3234-4ffa-a1e8-cd918bab0b7c
+              - column:
+                  name: project_id
+                  value: 0e26ef98-1b6b-4c0a-a102-50bff53e210e
+            schemaName: public
+            tableName: project_user
+
+  - changeSet:
+      id: 1678978478486-25
+      author: hauntedo (generated)
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  value: adadd510-c505-11ed-afa1-0242ac120002
+              - column:
+                  name: create_date
+                  value: 2023-03-17 23:18:41.820949
+              - column:
+                  name: email
+                  value: admin@admin.admin
+              - column:
+                  name: full_name
+                  value: admin
+              - column:
+                  name: password
+                  value: $2a$10$PJ5iLu0ybxKi8BWMNcOn9.kxsJ/5BkeENGWmZ8VLaBdeqhSjVP8YG
+              - column:
+                  name: user_role
+                  value: ADMIN
+            schemaName: public
+            tableName: users
