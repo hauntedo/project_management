@@ -25,9 +25,9 @@ public class SecurityConfiguration {
         return http.cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests()
-//                .antMatchers("/api/auth/**").permitAll()
-//                .anyRequest().authenticated().and()
-                .anyRequest().permitAll().and()
+                .antMatchers("/api/authenticate/**").permitAll()
+                .antMatchers("/api/register/**").permitAll()
+                .anyRequest().authenticated().and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).build();
@@ -38,7 +38,7 @@ public class SecurityConfiguration {
         return web -> web.ignoring()
                 .antMatchers("/api/auth/**")
                 .antMatchers("/v3/api-docs/**")
-                .antMatchers("configuration/**")
+                .antMatchers("/configuration/**")
                 .antMatchers("/swagger*/**")
                 .antMatchers("/webjars/**")
                 .antMatchers("/swagger-ui/**");

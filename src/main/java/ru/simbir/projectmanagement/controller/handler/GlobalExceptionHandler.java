@@ -75,13 +75,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public final ResponseEntity<ExceptionResponse> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
-        ExceptionResponse response = ExceptionResponse.builder()
-                .date(Instant.now().toString())
-                .message(ex.getMessage())
-                .exceptionName(ex.getClass().getSimpleName())
-                .description(request.getDescription(false))
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                ExceptionResponse.builder()
+                        .date(Instant.now().toString())
+                        .message(ex.getMessage())
+                        .exceptionName(ex.getClass().getSimpleName())
+                        .description(request.getDescription(false))
+                        .build());
     }
 
     @Override

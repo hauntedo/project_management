@@ -9,7 +9,6 @@ import ru.simbir.projectmanagement.model.User;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -20,7 +19,6 @@ public interface UserMapper {
 
     void updateUser(UserUpdateRequest userUpdateRequest, @MappingTarget User user);
 
-    Set<UserResponse> toSet(Collection<User> users);
 
     List<UserResponse> toList(Collection<User> users);
 }

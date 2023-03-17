@@ -27,12 +27,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (token == null) {
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header == null) {
             filterChain.doFilter(request, response);
             return;
         }
+        String token;
+        if (header.startsWith("Bearer ")) {
+            token = header.substring(7);
+        } else {
+            token = header;
+        }
         String username = jwtTokenService.validateToken(token);
+
         if (username == null) {
             filterChain.doFilter(request, response);
             return;

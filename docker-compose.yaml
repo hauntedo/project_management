@@ -1,0 +1,29 @@
+version: '3.3'
+
+services:
+
+  application:
+    image: application-image
+    container_name: application-container
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/demo
+      - SPRING_DATASOURCE_USERNAME=rusya
+      - SPRING_DATASOURCE_PASSWORD=qwerty007
+      - JWT_SECRET=boom
+      - JWT_EXPIRATION_TIME=86400
+
+  database:
+    image:
+      postgres
+    container_name:
+      database
+    ports:
+      - 5434:5432
+    environment:
+      - POSTGRES_PASSWORD=qwerty007
+      - POSTGRES_USER=rusya
+      - POSTGRES_DB=demo
