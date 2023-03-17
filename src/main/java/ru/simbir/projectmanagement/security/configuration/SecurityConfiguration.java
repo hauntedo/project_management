@@ -27,6 +27,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .antMatchers("/api/authenticate/**").permitAll()
                 .antMatchers("/api/register/**").permitAll()
+                .antMatchers("/api/admins/**").hasRole("ADMIN")
                 .anyRequest().authenticated().and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
