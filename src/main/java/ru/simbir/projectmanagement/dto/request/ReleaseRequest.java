@@ -19,10 +19,11 @@ import static ru.simbir.projectmanagement.utils.consts.ApiConsts.VERSION_REGEX;
 public class ReleaseRequest {
 
     @NotNull
-    @Schema(name = "version")
+    @Schema(name = "version", example = "1.0.0")
     @JsonProperty("version")
-    @Pattern(regexp = VERSION_REGEX)
+    @Pattern(regexp = VERSION_REGEX, message = "Invalid version")
     private String version;
+
     @NotNull
     @Schema(name = "description")
     @JsonProperty("description")

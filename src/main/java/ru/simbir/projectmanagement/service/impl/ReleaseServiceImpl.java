@@ -41,11 +41,13 @@ public class ReleaseServiceImpl implements ReleaseService {
         List<Release> releases = task.getReleases();
         if (!releases.isEmpty()) {
             for (Release release : releases) {
+                //проверка, имеет ли релиз время завершения
                 if (release.getEnd() != null) {
                     LOGGER.warn("#validateRelease: release by id {} is not completed. {}", release.getId(),
                             ReleaseException.class.getSimpleName());
                     throw new ReleaseException("Release is not completed: " + release.getId());
                 }
+                //проверка валидности версии релиза, после 1.0.2 нельзя добавить 1.0.1
                 if (release.getVersion().compareTo(releaseRequest.getVersion()) >= 0) {
                     LOGGER.warn("#validateRelease: release by id {} is not completed. {}", release.getId(),
                             ReleaseVersionException.class.getSimpleName());
@@ -74,12 +76,15 @@ public class ReleaseServiceImpl implements ReleaseService {
             throw new DataNotFoundException("Task by id " + taskId + " not found");
         }
         Task task = optionalTask.get();
+        //проверка того, что задача находится в стадии выполнения, иначе нельзя добавить релиз
         if (!task.getTaskState().equals(TaskState.IN_PROGRESS)) {
             LOGGER.warn("#addRelease: task by id {} has not state 'IN_PROGRESS'. {}", taskId,
                     ReleaseException.class.getSimpleName());
-            throw new ReleaseException("Release can only be added if task status is IN_PROGRESS. Task id " + taskId);
+            throw new ReleaseException("Release can be added if task status is IN_PROGRESS. Task id " + taskId);
         }
+        //только автор или исполнитель задачи может добавить релиз
         if (task.getDeveloper().getEmail().equals(username) || task.getAuthor().getEmail().equals(username)) {
+            //проверка на валидность релиза
             validateRelease(releaseRequest, task);
             Release newRelease = releaseMapper.toEntity(releaseRequest);
             newRelease.setStart(Instant.now());
@@ -118,12 +123,15 @@ public class ReleaseServiceImpl implements ReleaseService {
             throw new DataNotFoundException("Not found release by id " + releaseId);
         }
         Release release = optionalRelease.get();
+        //проверка на то, что текущий пользователь является либо исполнителем, либо автором задачи
         if (release.getDeveloper().getEmail().equals(username) || release.getTask().getAuthor().getEmail().equals(username)) {
+            //невозможно обновить версию релиза
             if (!release.getVersion().equals(releaseRequest.getVersion())) {
                 LOGGER.warn("#updateReleaseById: release by id {} version is not upgradable. {}", releaseId,
                         ReleaseException.class.getSimpleName());
                 throw new ReleaseException("Release version no upgradable. Id " + releaseId);
             }
+            //нельзя обновлять релиз, если он имеет время завершения
             if (release.getEnd() != null) {
                 LOGGER.warn("#updateReleaseById: release by id {} completed. {}", releaseId,
                         ReleaseException.class.getSimpleName());
@@ -152,7 +160,9 @@ public class ReleaseServiceImpl implements ReleaseService {
             throw new DataNotFoundException("Not found release by id " + releaseId);
         }
         Release release = optionalRelease.get();
+        //релиз может закрыть лишь исполнитель, либо автор задачи
         if (release.getDeveloper().getEmail().equals(username) || release.getTask().getAuthor().getEmail().equals(username)) {
+            //проверка, что релиз еще не закрыт
             if (release.getEnd() != null) {
                 LOGGER.warn("#closeRelease: release by id {} already completed. {}", releaseId,
                         ReleaseException.class.getSimpleName());

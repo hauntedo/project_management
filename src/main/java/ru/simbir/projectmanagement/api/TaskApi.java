@@ -32,7 +32,8 @@ public interface TaskApi {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(value = "/{task-id}", produces = APPLICATION_JSON_VALUE)
-    ResponseEntity<TaskResponse> getTaskById(@PathVariable("task-id") UUID taskId);
+    ResponseEntity<TaskResponse> getTaskById(@PathVariable("task-id") UUID taskId,
+                                             @Parameter(hidden = true) @AuthenticationPrincipal UserDetails userDetails);
 
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping(value = "/{task-id}", produces = APPLICATION_JSON_VALUE)

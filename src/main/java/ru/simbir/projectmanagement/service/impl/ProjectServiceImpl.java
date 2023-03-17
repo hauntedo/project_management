@@ -83,6 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new DataNotFoundException("Project by id {} " + projectId + " not found");
         }
         Project project = optionalProject.get();
+        //проверка на доступ над проектом для пользователя
         checkAccessToOperate(username, project.getOwner().getEmail());
         projectMapper.update(projectRequest, project);
         LOGGER.info("#updateProjectById: try to save project by id {}", projectId);
@@ -101,7 +102,9 @@ public class ProjectServiceImpl implements ProjectService {
             throw new DataNotFoundException("Project by id {} " + projectId + " not found");
         }
         Project project = optionalProject.get();
+        //проверка на доступ над проектом для пользователя
         checkAccessToOperate(username, project.getOwner().getEmail());
+        //проверка, что проект еще не запущен
         if (project.getProjectState() != ProjectState.BACKLOG) {
             LOGGER.error("#startProject: project by id {} can only be run in BACKLOG state: {}", projectId,
                     EntityStateException.class.getSimpleName());
@@ -123,7 +126,9 @@ public class ProjectServiceImpl implements ProjectService {
             throw new DataNotFoundException("Project by id {} " + projectId + " not found");
         }
         Project project = optionalProject.get();
+        //проверка на доступ над проектом для пользователя
         checkAccessToOperate(username, project.getOwner().getEmail());
+        //проверка, что все задачи завершены
         for (Task t : project.getTasks()) {
             if (!t.getTaskState().equals(TaskState.DONE)) {
                 LOGGER.error("#endProject: task state by id {} is not 'DONE': {}", t.getId(),
@@ -147,6 +152,7 @@ public class ProjectServiceImpl implements ProjectService {
             return ProjectResponse.builder().build();
         }
         Project project = optionalProject.get();
+        //информацию о проекте может получить только участник
         for (User user : project.getUsers()) {
             if (user.getEmail().equals(username)) {
                 return projectMapper.toResponse(project);

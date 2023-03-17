@@ -1,9 +1,8 @@
 package ru.simbir.projectmanagement.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
-public class TaskException extends ResponseStatusException {
+public class TaskException extends GlobalException {
 
     public TaskException() {
         super(HttpStatus.BAD_REQUEST);

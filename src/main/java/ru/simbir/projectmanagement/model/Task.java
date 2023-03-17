@@ -42,7 +42,7 @@ public class Task extends AbstractEntity {
     @Column(name = "task_state", nullable = false)
     private TaskState taskState;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
     private List<Release> releases = new ArrayList<>();
 
 

@@ -1,9 +1,8 @@
 package ru.simbir.projectmanagement.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
-public class OccupiedDataException extends ResponseStatusException {
+public class OccupiedDataException extends GlobalException {
     public OccupiedDataException(String s) {
         super(HttpStatus.BAD_REQUEST, s);
     }

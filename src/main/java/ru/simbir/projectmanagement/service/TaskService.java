@@ -47,10 +47,12 @@ public interface TaskService {
     /**
      * Метод для получения задачи по id.
      *
-     * @param taskId - id задачи
+     * @param taskId   - id задачи
+     * @param username - email текущего пользователя, полученного из user details
      * @return задачу, если она найдена, пустую задачу, если не найдена
+     * @throws AccessDeniedException - если текущий пользователь не является участником проекта
      */
-    TaskResponse getTaskById(UUID taskId);
+    TaskResponse getTaskById(UUID taskId, String username) throws AccessDeniedException;
 
     /**
      * Метод для удаления задачи. Задачу могут удалять только авторы задачи. Сначала ищет задачу по id,
@@ -106,7 +108,7 @@ public interface TaskService {
      * @return задачу в состоянии 'IN_PROGRESS'
      * @throws DataNotFoundException - если задача по id не найдена
      * @throws AccessDeniedException - если текущий пользователь не является автором или исполнителем задачи
-     * @throws TaskException         - если хоть один релиз не закрыт
+     * @throws TaskException         - если хоть один релиз не закрыт или проект не запущен или задача еще не запущена
      */
     TaskResponse updateTaskToDone(UUID taskId, String username);
 }

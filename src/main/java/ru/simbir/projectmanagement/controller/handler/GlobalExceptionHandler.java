@@ -16,6 +16,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.simbir.projectmanagement.dto.response.ExceptionResponse;
 import ru.simbir.projectmanagement.dto.validation.ValidationError;
+import ru.simbir.projectmanagement.exception.GlobalException;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -35,6 +36,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         .description(request.getDescription(false))
                         .build());
 
+    }
+
+    @ExceptionHandler(GlobalException.class)
+    public final ResponseEntity<ExceptionResponse> onGlobalException(GlobalException globalException, WebRequest request) {
+        return ResponseEntity
+                .status(globalException.getStatus())
+                .body(
+                        ExceptionResponse.builder()
+                                .date(Instant.now().toString())
+                                .message(globalException.getMessage())
+                                .description(request.getDescription(false))
+                                .exceptionName(globalException.getClass().getSimpleName())
+                                .build());
     }
 
     @ExceptionHandler(AuthenticationException.class)

@@ -10,7 +10,6 @@ import ru.simbir.projectmanagement.dto.response.SuccessResponse;
 import ru.simbir.projectmanagement.dto.response.TaskResponse;
 import ru.simbir.projectmanagement.service.TaskService;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @RestController
@@ -30,8 +29,8 @@ public class TaskController implements TaskApi {
     }
 
     @Override
-    public ResponseEntity<TaskResponse> getTaskById(UUID taskId) {
-        return ResponseEntity.ok(taskService.getTaskById(taskId));
+    public ResponseEntity<TaskResponse> getTaskById(UUID taskId, UserDetails userDetails) {
+        return ResponseEntity.ok(taskService.getTaskById(taskId, userDetails.getUsername()));
     }
 
     @Override

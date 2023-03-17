@@ -40,6 +40,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskMapper taskMapper;
 
     private static void checkOperateAccess(String username, Task task) {
+        //проверка на доступ над задачей
         if (!task.getAuthor().getEmail().equals(username)) {
             LOGGER.warn("#checkOperateAccess: no access to operate task by id {} for user by email {}. {}",
                     task.getId(), username, AccessDeniedException.class.getSimpleName());
@@ -48,12 +49,22 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private static void checkReleaseState(Task task) {
+        //задачу нельзя завершить, если релизы не закрыты
         for (Release release : task.getReleases()) {
             if (release.getEnd() == null) {
                 LOGGER.warn("#checkReleaseState: release by id {} in task by id {} is not completed. {}",
                         release.getId(), task.getId(), TaskException.class.getSimpleName());
                 throw new TaskException("Cannot complete a task if one release is not completed");
             }
+        }
+    }
+
+    private static void checkProjectState(Task task) {
+        //проверка того, что проект находится в стадии выполнения
+        if (!task.getProject().getProjectState().equals(ProjectState.IN_PROGRESS)) {
+            LOGGER.warn("#checkProjectState: project by id {} is not running. {}", task.getProject().getId(),
+                    TaskException.class.getSimpleName());
+            throw new TaskException("Task can only be moved to a state 'IN_PROGRESS', when the project is running");
         }
     }
 
@@ -69,6 +80,7 @@ public class TaskServiceImpl implements TaskService {
             throw new DataNotFoundException("Project by id " + projectId + " not found");
         }
         Project project = optionalProject.get();
+        //задачу могут создавать лишь СОЗДАТЕЛИ проекта
         if (!project.getOwner().getEmail().equals(username)) {
             LOGGER.warn("#addTask: no access to add task on project by id {}. {}", projectId,
                     AccessDeniedException.class.getSimpleName());
@@ -94,6 +106,7 @@ public class TaskServiceImpl implements TaskService {
             throw new DataNotFoundException("Task by id " + taskId + " not found");
         }
         Task task = optionalTask.get();
+        //проверка доступа над задачей
         checkOperateAccess(username, task);
         taskMapper.update(taskRequest, task);
         LOGGER.info("#updateTask: try to save task");
@@ -104,14 +117,23 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional(readOnly = true)
     @Override
-    public TaskResponse getTaskById(UUID taskId) {
+    public TaskResponse getTaskById(UUID taskId, String username) {
         LOGGER.info("#getTaskById: find task by id {}", taskId);
         Optional<Task> optionalTask = taskRepository.findById(taskId);
         if (!optionalTask.isPresent()) {
             LOGGER.warn("#getTaskById: task by id {} not found.", taskId);
             return TaskResponse.builder().build();
         }
-        return taskMapper.toResponse(optionalTask.get());
+        Task task = optionalTask.get();
+        //информацию о задаче может получить лишь участник проекта
+        for (User u : task.getProject().getUsers()) {
+            if (u.getEmail().equals(username)) {
+                return taskMapper.toResponse(task);
+            }
+        }
+        LOGGER.warn("#getTaskById: no access for task by id {} for user by email {}. {}",
+                task.getId(), username, AccessDeniedException.class.getSimpleName());
+        throw new AccessDeniedException("No access for this task: " + task.getId());
     }
 
     @Transactional
@@ -124,6 +146,7 @@ public class TaskServiceImpl implements TaskService {
             throw new DataNotFoundException("Task by id " + taskId + " not found");
         }
         Task task = optionalTask.get();
+        //проверка доступа над задачей
         checkOperateAccess(username, task);
         LOGGER.info("#deleteTaskById: try to delete task by id {}", taskId);
         taskRepository.delete(task);
@@ -144,22 +167,33 @@ public class TaskServiceImpl implements TaskService {
             throw new DataNotFoundException("Task by id " + taskId + " not found");
         }
         Task task = optionalTask.get();
+        //задачу нельзя отложить, если он не запущен( логично :) ) или завершен
         if (!task.getTaskState().equals(TaskState.IN_PROGRESS)) {
             LOGGER.warn("#updateTaskToBacklog: task by id {} is not running. {}", taskId,
                     TaskException.class.getSimpleName());
             throw new TaskException("Task by id " + taskId + " is not running");
         }
+        //проверка состояния релиза
+        checkReleaseState(task);
+        //отложить задачу могут только исполнитель или автор задачи
         if (task.getAuthor().getEmail().equals(username) || task.getDeveloper().getEmail().equals(username)) {
-            task.setTaskState(TaskState.BACKLOG);
-            LOGGER.info("#updateTaskToBacklog: try to save task by id {}", taskId);
-            task = taskRepository.save(task);
-            LOGGER.info("#updateTaskToBacklog: task by id {} saved", task.getId());
+            task.setDeveloper(null);
+            //перевод в другое состояние
+            task = transferTaskState(task, TaskState.BACKLOG);
             return taskMapper.toResponse(task);
         } else {
             LOGGER.warn("#updateTaskToBacklog: no access to update task by {} for user by email {}. {}",
                     taskId, username, AccessDeniedException.class.getSimpleName());
             throw new AccessDeniedException("Only author or developer can change task state");
         }
+    }
+
+    private Task transferTaskState(Task task, TaskState taskState) {
+        task.setTaskState(taskState);
+        LOGGER.info("#saveTask: try to save task by id {}", task.getId());
+        task = taskRepository.save(task);
+        LOGGER.info("#saveTask: task by id {} saved", task.getId());
+        return task;
     }
 
     @Transactional
@@ -180,23 +214,20 @@ public class TaskServiceImpl implements TaskService {
             throw new DataNotFoundException("No found user by email " + username);
         }
         User user = optionalUser.get();
-        if (!task.getProject().getProjectState().equals(ProjectState.IN_PROGRESS)) {
-            LOGGER.warn("#updateTaskToInProgress: task by id {} has not state IN_PROGRESS. {}", taskId,
-                    TaskException.class.getSimpleName());
-            throw new TaskException("Task can only be moved to a state 'IN_PROGRESS', when the project is running");
-        }
+        //задачу можно запустить, только если проект запущен
+        checkProjectState(task);
+        //проверка того, имеет ли задача исполнителя или она запущена
         if (task.getDeveloper() != null || task.getTaskState().equals(TaskState.IN_PROGRESS)) {
             LOGGER.warn("#updateTaskToInProgress: task by id {} already started. {}", taskId,
                     TaskException.class.getSimpleName());
             throw new TaskException("Task is running");
         }
+        //задачу могут начать только участники проекта
         for (User u : task.getProject().getUsers()) {
             if (u.getEmail().equals(username)) {
                 task.setDeveloper(user);
-                task.setTaskState(TaskState.IN_PROGRESS);
-                LOGGER.info("#updateTaskToInProgress: try to save task by id {}", taskId);
-                task = taskRepository.save(task);
-                LOGGER.info("#updateTaskToInProgress: task by id {} saved", task.getId());
+                //перевод в другое состояние
+                task = transferTaskState(task, TaskState.IN_PROGRESS);
                 return taskMapper.toResponse(task);
             }
         }
@@ -216,12 +247,20 @@ public class TaskServiceImpl implements TaskService {
             throw new DataNotFoundException("Task by id " + taskId + " not found");
         }
         Task task = optionalTask.get();
+        //проверка состояния проекта
+        checkProjectState(task);
+        //нельзя сразу перевести в состояние 'DONE' из 'BACKLOG'
+        if (!task.getTaskState().equals(TaskState.IN_PROGRESS)) {
+            LOGGER.warn("#updateTaskToDone: task by id {} not started yet. {}", task.getId(),
+                    TaskException.class.getSimpleName());
+            throw new TaskException("Task by id " + task.getId() + " not started yet");
+        }
+        //только исполнитель либо автор задачи могут завершить ее
         if (task.getAuthor().getEmail().equals(username) || task.getDeveloper().getEmail().equals(username)) {
+            //проверка состояния релиза
             checkReleaseState(task);
-            task.setTaskState(TaskState.DONE);
-            LOGGER.info("#updateTaskToDone: try to save task  by id {}", taskId);
-            task = taskRepository.save(task);
-            LOGGER.info("#updateTaskToDone: task by id {} saved", task.getId());
+            //перевод в другое состояние
+            task = transferTaskState(task, TaskState.DONE);
             return taskMapper.toResponse(task);
         } else {
             LOGGER.warn("#updupdateTaskToDone: no access to update task by {} for user by email {}. {}",
