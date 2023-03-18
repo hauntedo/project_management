@@ -13,4 +13,5 @@ public interface ProjectRepository extends JpaRepository<Project, UUID> {
     Page<Project> findAllByUsers_Id(UUID user_id, Pageable pageable);
 
     Optional<Project> findByCode(String code);
+    boolean existsByCode(String code);
 }

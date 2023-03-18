@@ -4,6 +4,7 @@ package ru.simbir.projectmanagement.dto.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import static ru.simbir.projectmanagement.utils.consts.ApiConsts.EMAIL_REGEX;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Schema(name = "registration request")
 public class RegistrationRequest {
 

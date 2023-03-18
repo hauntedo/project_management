@@ -41,7 +41,7 @@ public class RegServiceImpl implements RegService {
                 .build();
         user.setRole(Role.USER);
         LOGGER.info("#registerUser: try to save user by email {}", email);
-        userRepository.save(user);
+        user = userRepository.save(user);
         LOGGER.info("#registerUser: user by email {} saved", email);
         return user.getId();
     }

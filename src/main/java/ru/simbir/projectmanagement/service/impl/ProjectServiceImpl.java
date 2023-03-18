@@ -12,6 +12,7 @@ import ru.simbir.projectmanagement.dto.request.ProjectRequest;
 import ru.simbir.projectmanagement.dto.response.*;
 import ru.simbir.projectmanagement.exception.DataNotFoundException;
 import ru.simbir.projectmanagement.exception.EntityStateException;
+import ru.simbir.projectmanagement.exception.OccupiedDataException;
 import ru.simbir.projectmanagement.model.Project;
 import ru.simbir.projectmanagement.model.Task;
 import ru.simbir.projectmanagement.model.User;
@@ -46,7 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private static void checkAccessToOperate(String username, String projectOwnerEmail) {
         if (!projectOwnerEmail.equals(username)) {
-            LOGGER.error("#checkAccessToOperate: {}", projectOwnerEmail);
+            LOGGER.warn("#checkAccessToOperate: {}", projectOwnerEmail);
             throw new AccessDeniedException("No access to control a project");
         }
     }
@@ -57,8 +58,14 @@ public class ProjectServiceImpl implements ProjectService {
         LOGGER.info("#createProject: find user by email {}", username);
         Optional<User> optionalUser = userRepository.findByEmail(username);
         if (!optionalUser.isPresent()) {
-            LOGGER.error("#createProject: user by email {} not found", username);
+            LOGGER.warn("#createProject: user by email {} not found", username);
             throw new DataNotFoundException("User by email {} " + username + " not found");
+        }
+        String code = projectRequest.getCode();
+        if (projectRepository.existsByCode(code)) {
+            LOGGER.warn("#createProject: occupied project code {}. {}", code,
+                    OccupiedDataException.class.getSimpleName());
+            throw new OccupiedDataException("Project code is occupied");
         }
         User user = optionalUser.get();
         Project newProject = projectMapper.toEntity(projectRequest);
