@@ -1,3 +1,4 @@
+#все пароли qwerty
 databaseChangeLog:
   - changeSet:
       id: 1678978478486-16
