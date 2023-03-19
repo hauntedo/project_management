@@ -5,19 +5,25 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 import ru.simbir.projectmanagement.dto.request.ProjectRequest;
 import ru.simbir.projectmanagement.dto.response.ProjectResponse;
 import ru.simbir.projectmanagement.dto.response.UserResponse;
+import ru.simbir.projectmanagement.exception.DataNotFoundException;
 import ru.simbir.projectmanagement.exception.EntityStateException;
 import ru.simbir.projectmanagement.exception.OccupiedDataException;
 import ru.simbir.projectmanagement.model.Project;
+import ru.simbir.projectmanagement.model.Task;
 import ru.simbir.projectmanagement.model.User;
 import ru.simbir.projectmanagement.repository.ProjectRepository;
 import ru.simbir.projectmanagement.repository.UserRepository;
 import ru.simbir.projectmanagement.utils.TestUtils;
 import ru.simbir.projectmanagement.utils.enums.ProjectState;
+import ru.simbir.projectmanagement.utils.enums.TaskState;
 import ru.simbir.projectmanagement.utils.mapper.ProjectMapper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -141,6 +147,17 @@ class ProjectServiceTest {
             assertEquals(expected, actual);
 
         }
+
+        @Test
+        void throw_data_not_found_exception() {
+            //given
+            UUID projectId = UUID.randomUUID();
+            when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
+
+            //when & then
+            assertThrows(DataNotFoundException.class, () -> projectService.endProject(projectId, anyString()));
+
+        }
     }
 
     @Nested
@@ -176,6 +193,29 @@ class ProjectServiceTest {
         }
 
         @Test
+        void throw_access_denied_exception() {
+            //given
+            User user = TestUtils.getUser();
+            Project project = TestUtils.getProject(user);
+
+            when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
+
+            //when & then
+            assertThrows(AccessDeniedException.class, () -> projectService.endProject(project.getId(), anyString()));
+        }
+
+        @Test
+        void throw_data_not_found_exception() {
+            //given
+            UUID projectId = UUID.randomUUID();
+            when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
+
+            //when & then
+            assertThrows(DataNotFoundException.class, () -> projectService.endProject(projectId, anyString()));
+
+        }
+
+        @Test
         void throw_entity_state_exception() {
             User user = TestUtils.getUser();
             Project project = TestUtils.getProject(user);
@@ -185,5 +225,79 @@ class ProjectServiceTest {
             assertThrows(EntityStateException.class, () -> projectService.startProject(project.getId(), user.getEmail())
                     );
         }
+    }
+
+    @Nested
+    @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+    @DisplayName("endProject is working")
+    class endProject {
+
+        @Test
+        void end_project() {
+            //given
+            User user = TestUtils.getUser();
+            UserResponse userResponse = TestUtils.getUserResponse(user);
+            Project project = TestUtils.getProject(user);
+            project.setProjectState(ProjectState.IN_PROGRESS);
+            Project doneProject = TestUtils.getProject(user);
+            doneProject.setProjectState(ProjectState.DONE);
+            Task task = TestUtils.getTask(project, user);
+            task.setTaskState(TaskState.DONE);
+            List<Task> tasks = new ArrayList<>();
+            tasks.add(task);
+            project.setTasks(tasks);
+            ProjectResponse projectResponse = TestUtils.getProjectResponse(doneProject, userResponse);
+            ProjectState expected = ProjectState.DONE;
+            when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
+            when(projectRepository.save(project)).thenReturn(doneProject);
+            when(projectMapper.toResponse(doneProject)).thenReturn(projectResponse);
+
+            //when
+            ProjectResponse actual = projectService.endProject(project.getId(), user.getEmail());
+
+            //then
+            assertEquals(expected.name(), actual.getProjectState());
+        }
+
+        @Test
+        void throw_entity_state_exception() {
+            //given
+            User user = TestUtils.getUser();
+            Project project = TestUtils.getProject(user);
+            project.setProjectState(ProjectState.IN_PROGRESS);
+            Task task = TestUtils.getTask(project, user);
+            List<Task> tasks = new ArrayList<>();
+            tasks.add(task);
+            project.setTasks(tasks);
+            when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
+
+            //when & then
+            assertThrows(EntityStateException.class, () ->
+                    projectService.endProject(project.getId(), user.getEmail()));
+        }
+
+        @Test
+        void throw_data_not_found_exception() {
+            //given
+            UUID projectId = UUID.randomUUID();
+            when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
+
+            //when & then
+            assertThrows(DataNotFoundException.class, () -> projectService.endProject(projectId, anyString()));
+
+        }
+
+        @Test
+        void throw_access_denied_exception() {
+            //given
+            User user = TestUtils.getUser();
+            Project project = TestUtils.getProject(user);
+
+            when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
+
+            //when & then
+            assertThrows(AccessDeniedException.class, () -> projectService.endProject(project.getId(), anyString()));
+        }
+
     }
 }
