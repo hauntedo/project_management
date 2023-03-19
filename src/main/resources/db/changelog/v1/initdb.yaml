@@ -1,0 +1,306 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1678978478486-1
+      author: hauntedo (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: project_user_pkey
+                  name: project_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: project_user_pkey
+                  name: user_id
+                  type: UUID
+            tableName: project_user
+  - changeSet:
+      id: 1678978478486-2
+      author: hauntedo (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: projects_pkey
+                  name: id
+                  type: UUID
+              - column:
+                  name: create_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_code
+                  type: VARCHAR(255)
+              - column:
+                  name: project_description
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_name
+                  type: VARCHAR(255)
+              - column:
+                  name: project_state
+                  type: VARCHAR(255)
+              - column:
+                  name: owner_id
+                  type: UUID
+            tableName: projects
+  - changeSet:
+      id: 1678978478486-3
+      author: hauntedo (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: releases_pkey
+                  name: id
+                  type: UUID
+              - column:
+                  name: create_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: release_description
+                  type: VARCHAR(255)
+              - column:
+                  name: end_time
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: start_time
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: release_version
+                  type: VARCHAR(255)
+              - column:
+                  name: developer_id
+                  type: UUID
+              - column:
+                  name: task_id
+                  type: UUID
+            tableName: releases
+  - changeSet:
+      id: 1678978478486-4
+      author: hauntedo (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: tasks_pkey
+                  name: id
+                  type: UUID
+              - column:
+                  name: create_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: task_description
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: task_name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: task_state
+                  type: VARCHAR(255)
+              - column:
+                  name: author_id
+                  type: UUID
+              - column:
+                  name: developer_id
+                  type: UUID
+              - column:
+                  name: project_id
+                  type: UUID
+            tableName: tasks
+  - changeSet:
+      id: 1678978478486-5
+      author: hauntedo (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: users_pkey
+                  name: id
+                  type: UUID
+              - column:
+                  name: create_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: full_name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: password
+                  type: VARCHAR(255)
+              - column:
+                  name: user_role
+                  type: VARCHAR(255)
+            tableName: users
+  - changeSet:
+      id: 1678978478486-6
+      author: hauntedo (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: project_code
+            constraintName: uk_1batb7mq0elcfcs3d6maqo6sg
+            tableName: projects
+  - changeSet:
+      id: 1678978478486-7
+      author: hauntedo (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: email
+            constraintName: uk_6dotkott2kjsp8vw4d0m25fb7
+            tableName: users
+  - changeSet:
+      id: 1678978478486-8
+      author: hauntedo (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_id
+            baseTableName: project_user
+            constraintName: fk1c6bgkykjvnomkpds2xapx719
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: projects
+            validate: true
+  - changeSet:
+      id: 1678978478486-9
+      author: hauntedo (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: developer_id
+            baseTableName: releases
+            constraintName: fk1tkhh050xegxmom6btgln7n83
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1678978478486-10
+      author: hauntedo (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: developer_id
+            baseTableName: tasks
+            constraintName: fk79r3ikp3utt1gvnk7j2s3asvs
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1678978478486-11
+      author: hauntedo (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: task_id
+            baseTableName: releases
+            constraintName: fkdtbmbjyvr0bndf5f7vt05tqu8
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: tasks
+            validate: true
+  - changeSet:
+      id: 1678978478486-12
+      author: hauntedo (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: project_user
+            constraintName: fkfscw5rga2yu389e705x9wg6kb
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1678978478486-13
+      author: hauntedo (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: author_id
+            baseTableName: tasks
+            constraintName: fkhods8r8oyyx7tuj3c91ki2sk1
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1678978478486-14
+      author: hauntedo (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: owner_id
+            baseTableName: projects
+            constraintName: fkmueqy6cpcwpfl8gnnag4idjt9
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: users
+            validate: true
+  - changeSet:
+      id: 1678978478486-15
+      author: hauntedo (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_id
+            baseTableName: tasks
+            constraintName: fksfhn82y57i3k9uxww1s007acc
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: projects
+            validate: true
+
