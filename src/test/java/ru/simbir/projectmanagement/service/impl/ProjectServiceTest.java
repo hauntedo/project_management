@@ -100,8 +100,8 @@ class ProjectServiceTest {
             //when & then
             assertThrows(OccupiedDataException.class, () -> projectService.createProject(
                     ProjectRequest.builder()
-                    .code("testcode")
-                    .build(),
+                            .code("testcode")
+                            .build(),
                     user.getEmail())
             );
         }
@@ -223,7 +223,7 @@ class ProjectServiceTest {
             when(projectRepository.findById(project.getId())).thenReturn(Optional.of(project));
 
             assertThrows(EntityStateException.class, () -> projectService.startProject(project.getId(), user.getEmail())
-                    );
+            );
         }
     }
 

@@ -2,6 +2,7 @@ package ru.simbir.projectmanagement.utils;
 
 import ru.simbir.projectmanagement.dto.request.ProjectRequest;
 import ru.simbir.projectmanagement.dto.response.ProjectResponse;
+import ru.simbir.projectmanagement.dto.response.TaskResponse;
 import ru.simbir.projectmanagement.dto.response.UserResponse;
 import ru.simbir.projectmanagement.model.Project;
 import ru.simbir.projectmanagement.model.Task;
@@ -44,6 +45,15 @@ public class TestUtils {
                 .build();
     }
 
+    public static Project getProject() {
+        return Project.builder()
+                .code("testcode")
+                .name("testname")
+                .projectState(ProjectState.BACKLOG)
+                .id(UUID.randomUUID())
+                .build();
+    }
+
     public static ProjectResponse getProjectResponse(Project project, UserResponse userResponse) {
         return ProjectResponse.builder()
                 .code(project.getCode())
@@ -68,6 +78,23 @@ public class TestUtils {
                 .id(UUID.randomUUID())
                 .project(project)
                 .author(user)
+                .name("testtask")
+                .taskState(TaskState.BACKLOG)
+                .build();
+    }
+
+    public static TaskResponse getTaskResponse(UserResponse user, Task task) {
+        return TaskResponse.builder()
+                .author(user)
+                .taskState(task.getTaskState().name())
+                .id(task.getId())
+                .name(task.getName())
+                .build();
+    }
+
+    public static Task getTask() {
+        return Task.builder()
+                .id(UUID.randomUUID())
                 .name("testtask")
                 .taskState(TaskState.BACKLOG)
                 .build();
