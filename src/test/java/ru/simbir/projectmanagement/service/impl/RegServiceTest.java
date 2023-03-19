@@ -11,7 +11,6 @@ import ru.simbir.projectmanagement.exception.OccupiedDataException;
 import ru.simbir.projectmanagement.model.User;
 import ru.simbir.projectmanagement.repository.UserRepository;
 import ru.simbir.projectmanagement.utils.TestUtils;
-import ru.simbir.projectmanagement.utils.enums.Role;
 
 import java.util.UUID;
 
