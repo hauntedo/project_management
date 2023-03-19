@@ -5,23 +5,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import ru.simbir.projectmanagement.dto.request.UserUpdateRequest;
 import ru.simbir.projectmanagement.dto.response.UserResponse;
 import ru.simbir.projectmanagement.model.User;
-import ru.simbir.projectmanagement.repository.ProjectRepository;
 import ru.simbir.projectmanagement.repository.UserRepository;
 import ru.simbir.projectmanagement.utils.enums.Role;
-import ru.simbir.projectmanagement.utils.mapper.ProjectMapper;
 import ru.simbir.projectmanagement.utils.mapper.UserMapper;
 
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
