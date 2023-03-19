@@ -28,21 +28,33 @@ public class RegServiceImpl implements RegService {
     @Override
     public UUID registerUser(RegistrationRequest registrationRequest) {
         String email = registrationRequest.getEmail();
-        String password = registrationRequest.getPassword();
-        LOGGER.info("#registerUser: find user by email {}", email);
+        checkUserByEmail(email);
+        User user = createUser(registrationRequest);
+        user = saveUser(email, user);
+        return user.getId();
+    }
+
+    private User saveUser(String email, User user) {
+        LOGGER.info("#saveUser: try to save user by email {}", email);
+        user = userRepository.save(user);
+        LOGGER.info("#saveUser: user by email {} saved", email);
+        return user;
+    }
+
+    private User createUser(RegistrationRequest registrationRequest) {
+        return User.builder()
+                .fullName(registrationRequest.getFullName())
+                .password(passwordEncoder.encode(registrationRequest.getPassword()))
+                .email(registrationRequest.getEmail())
+                .role(Role.USER)
+                .build();
+    }
+
+    private void checkUserByEmail(String email) {
+        LOGGER.info("#checkUserByEmail: find user by email {}", email);
         if (userRepository.existsUserByEmail(email)) {
-            LOGGER.warn("#registerUser: occupied user email {}. {}", email, OccupiedDataException.class.getSimpleName());
+            LOGGER.warn("#checkUserByEmail: occupied user email {}. {}", email, OccupiedDataException.class.getSimpleName());
             throw new OccupiedDataException("Email is occupied " + email);
         }
-        User user = User.builder()
-                .fullName(registrationRequest.getFullName())
-                .password(passwordEncoder.encode(password))
-                .email(email)
-                .build();
-        user.setRole(Role.USER);
-        LOGGER.info("#registerUser: try to save user by email {}", email);
-        user = userRepository.save(user);
-        LOGGER.info("#registerUser: user by email {} saved", email);
-        return user.getId();
     }
 }

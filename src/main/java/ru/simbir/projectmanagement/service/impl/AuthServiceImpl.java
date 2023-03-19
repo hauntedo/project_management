@@ -31,16 +31,24 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public TokenResponse authenticate(AuthenticationRequest authenticationRequest) {
         String email = authenticationRequest.getEmail();
+        checkAuthentication(authenticationRequest, email);
+        UserDetails userDetails = getUserDetails(email);
+        return TokenResponse.builder()
+                .accessToken(jwtTokenService.generateToken(userDetails))
+                .build();
+    }
+
+    private UserDetails getUserDetails(String email) {
+        LOGGER.info("#authenticate: find user by email: {}", email);
+        return userDetailsService.loadUserByUsername(email);
+    }
+
+    private void checkAuthentication(AuthenticationRequest authenticationRequest, String email) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email,
                     authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        LOGGER.info("#authenticate: find user by email: {}", email);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        return TokenResponse.builder()
-                .accessToken(jwtTokenService.generateToken(userDetails))
-                .build();
     }
 }

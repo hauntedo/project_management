@@ -37,26 +37,14 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public UserResponse getUserById(UUID userId) {
-        LOGGER.info("#getUserById: find user by id {}", userId);
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (!optionalUser.isPresent()) {
-            LOGGER.warn("#getUserById: user by id {} not found", userId);
-            return UserResponse.builder().build();
-        }
-        return userMapper.toResponse(optionalUser.get());
+        User user = getUser(userId);
+        return userMapper.toResponse(user);
     }
 
     @Transactional
     @Override
     public UserResponse updateUser(UUID userId, UserUpdateRequest userUpdateRequest) {
-        LOGGER.info("#updateUser: find user by id {}", userId);
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (!optionalUser.isPresent()) {
-            LOGGER.warn("#updateUser: user by id {} not found. {}", userId,
-                    DataNotFoundException.class.getSimpleName());
-            throw new DataNotFoundException("No found user by id " + userId);
-        }
-        User user = optionalUser.get();
+        User user = getUser(userId);
         userMapper.updateUser(userUpdateRequest, user);
         LOGGER.info("#updateUser: try to save user by id {}", userId);
         user = userRepository.save(user);
@@ -75,5 +63,16 @@ public class UserServiceImpl implements UserService {
                 .totalElements(projectPage.getTotalElements())
                 .totalPages(projectPage.getTotalPages())
                 .build();
+    }
+
+    private User getUser(UUID userId) {
+        LOGGER.info("#getUser: find user by id {}", userId);
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (!optionalUser.isPresent()) {
+            LOGGER.warn("#getUser: user by id {} not found. {}", userId,
+                    DataNotFoundException.class.getSimpleName());
+            throw new DataNotFoundException("No found user by id " + userId);
+        }
+        return optionalUser.get();
     }
 }

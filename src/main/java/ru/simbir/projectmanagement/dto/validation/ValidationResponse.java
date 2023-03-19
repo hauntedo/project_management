@@ -14,8 +14,8 @@ import java.util.Map;
 @NoArgsConstructor
 @Data
 @Builder
-@Schema(name = "validation error")
-public class ValidationError {
+@Schema(name = "validation response")
+public class ValidationResponse {
 
     @Schema(name = "http_status")
     @JsonProperty("http_status")

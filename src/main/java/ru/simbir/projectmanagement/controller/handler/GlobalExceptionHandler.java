@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.simbir.projectmanagement.dto.response.ExceptionResponse;
-import ru.simbir.projectmanagement.dto.validation.ValidationError;
+import ru.simbir.projectmanagement.dto.validation.ValidationResponse;
 import ru.simbir.projectmanagement.exception.GlobalException;
 
 import java.time.Instant;
@@ -107,9 +107,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
             errors.put(error.getObjectName(), error.getDefaultMessage());
         }
-        ValidationError error =
-                new ValidationError(HttpStatus.BAD_REQUEST, errors);
-        return handleExceptionInternal(
-                ex, error, headers, error.getStatus(), request);
+        ValidationResponse error = new ValidationResponse(HttpStatus.BAD_REQUEST, errors);
+        return handleExceptionInternal(ex, error, headers, error.getStatus(), request);
     }
 }

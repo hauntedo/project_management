@@ -37,9 +37,10 @@ public interface ReleaseService {
      * Метод для получения релиза по id
      *
      * @param releaseId - id релиза
-     * @return релиз, если он найден, пустой релиз, если не найден
+     * @return релиз
+     * @throws DataNotFoundException - если релиз не найден
      */
-    ReleaseResponse getReleaseById(UUID releaseId);
+    ReleaseResponse getReleaseById(UUID releaseId) throws DataNotFoundException;
 
     /**
      * Метод обновления релиза. Обновлять можно только описание релиза

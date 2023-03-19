@@ -21,9 +21,10 @@ public interface UserService {
      * Метод для получения пользователя по id
      *
      * @param userId - id пользователя
-     * @return пользователя, если он найден, пустого пользователя, если не найден
+     * @return пользователя
+     * @throws DataNotFoundException - если пользователь не найден
      */
-    UserResponse getUserById(UUID userId);
+    UserResponse getUserById(UUID userId) throws DataNotFoundException;
 
     /**
      * Метод для обновления данных пользователя по id
