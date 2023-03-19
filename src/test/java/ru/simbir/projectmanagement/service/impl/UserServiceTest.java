@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.simbir.projectmanagement.dto.response.UserResponse;
 import ru.simbir.projectmanagement.model.User;
 import ru.simbir.projectmanagement.repository.UserRepository;
+import ru.simbir.projectmanagement.utils.TestUtils;
 import ru.simbir.projectmanagement.utils.enums.Role;
 import ru.simbir.projectmanagement.utils.mapper.UserMapper;
 
@@ -31,19 +32,6 @@ class UserServiceTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    private User user;
-
-    @BeforeEach
-    void setUp() {
-        user = User.builder()
-                .email("test@test.test")
-                .password("qwerty")
-                .fullName("test")
-                .role(Role.USER)
-                .id(UUID.fromString("adadd510-c505-11ed-afa1-0242ac120002"))
-                .build();
-    }
-
     @Nested
     @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
     @DisplayName("getUserById is working")
@@ -51,23 +39,24 @@ class UserServiceTest {
 
         @Test
         void get_user_by_id() {
+            User user = TestUtils.getUser();
             UserResponse userResponse = UserResponse.builder()
-                    .email("test@test.test")
-                    .fullName("test")
+                    .email(user.getEmail())
+                    .fullName(user.getFullName())
                     .role(Role.USER.name())
-                    .id(UUID.fromString("adadd510-c505-11ed-afa1-0242ac120002"))
+                    .id(user.getId())
                     .build();
-            Optional<User> optionalUser = Optional.of(user);
-            when(userRepository.findById(any())).thenReturn(optionalUser);
-            when(userMapper.toResponse(optionalUser.get())).thenReturn(userResponse);
             UserResponse expected = UserResponse.builder()
                     .email("test@test.test")
                     .fullName("test")
                     .role(Role.USER.name())
-                    .id(UUID.fromString("adadd510-c505-11ed-afa1-0242ac120002"))
+                    .id(user.getId())
                     .build();
+            Optional<User> optionalUser = Optional.of(user);
+            when(userRepository.findById(any())).thenReturn(optionalUser);
+            when(userMapper.toResponse(optionalUser.get())).thenReturn(userResponse);
 
-            UserResponse actual = userService.getUserById(UUID.fromString("adadd510-c505-11ed-afa1-0242ac120002"));
+            UserResponse actual = userService.getUserById(user.getId());
 
             assertEquals(expected, actual);
         }

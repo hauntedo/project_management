@@ -10,6 +10,7 @@ import ru.simbir.projectmanagement.dto.request.RegistrationRequest;
 import ru.simbir.projectmanagement.exception.OccupiedDataException;
 import ru.simbir.projectmanagement.model.User;
 import ru.simbir.projectmanagement.repository.UserRepository;
+import ru.simbir.projectmanagement.utils.TestUtils;
 import ru.simbir.projectmanagement.utils.enums.Role;
 
 import java.util.UUID;
@@ -37,33 +38,34 @@ class RegServiceTest {
     class registerUser {
         @Test
         void register_user() {
-            User userAfterSaving = User.builder()
-                    .email("test@test.test")
-                    .password("qwerty")
-                    .role(Role.USER)
-                    .id(UUID.fromString("adadd510-c505-11ed-afa1-0242ac120002"))
-                    .build();
-            when(userRepository.existsUserByEmail("test@test.test")).thenReturn(Boolean.FALSE);
-            when(passwordEncoder.encode("qwerty")).thenReturn("qwerty");
-            when(userRepository.save(any())).thenReturn(userAfterSaving);
-
+            //given
+            User user = TestUtils.getUser();
             RegistrationRequest registrationRequest = RegistrationRequest.builder()
                     .email("test@test.test")
                     .password("qwerty")
                     .fullName("test")
                     .build();
-            UUID actual = regService.registerUser(registrationRequest);
-            UUID expected = UUID.fromString("adadd510-c505-11ed-afa1-0242ac120002");
 
+            UUID expected = UUID.fromString(user.getId().toString());
+            when(userRepository.existsUserByEmail(user.getEmail())).thenReturn(Boolean.FALSE);
+            when(passwordEncoder.encode(user.getPassword())).thenReturn(user.getPassword());
+            when(userRepository.save(any())).thenReturn(user);
+
+            //when
+            UUID actual = regService.registerUser(registrationRequest);
+
+            //then
             assertEquals(expected, actual);
         }
 
         @Test
         void throw_occupied_data_exception() {
-            when(userRepository.existsUserByEmail("occ@occ.occ")).thenReturn(Boolean.TRUE);
+            User user = TestUtils.getUser();
+            when(userRepository.existsUserByEmail(user.getEmail())).thenReturn(Boolean.TRUE);
+
             assertThrows(OccupiedDataException.class, () -> regService.registerUser(
                     RegistrationRequest.builder()
-                            .email("occ@occ.occ")
+                            .email(user.getEmail())
                             .password(anyString())
                             .build()
             ));
